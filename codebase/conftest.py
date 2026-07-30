@@ -1,0 +1,3 @@
+# Sự tồn tại của file này khiến pytest thêm thư mục codebase/ vào sys.path,
+# nhờ đó test trong codebase/tests/ import được pdf_parser, tools, agent...
+# File cố tình để trống.
