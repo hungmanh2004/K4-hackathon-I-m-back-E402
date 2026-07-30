@@ -535,30 +535,41 @@
     const decoder = new TextDecoder();
     let buffer = '';
 
-    while (true) {
-      const {done, value} = await reader.read();
-      if (done) break;
+    // Toàn bộ vòng đọc nằm trong try/finally: nếu kết nối đứt giữa chừng
+    // (backend crash, uvicorn --reload restart khi đang có request dở dang),
+    // reader.read() sẽ throw. Không bọc thì lỗi văng thẳng ra ngoài
+    // askAgent(), setBusy(false) phía dưới không bao giờ chạy, và 3 nút
+    // hành động bị khoá vĩnh viễn cho tới khi reload trang.
+    try {
+      while (true) {
+        const {done, value} = await reader.read();
+        if (done) break;
 
-      buffer += decoder.decode(value, {stream: true});
+        buffer += decoder.decode(value, {stream: true});
 
-      // Chunk mạng KHÔNG trùng ranh giới event: một event có thể bị cắt làm
-      // đôi giữa hai chunk, hoặc ba event về chung một chunk. Nên phải tích
-      // buffer, tách theo '\n\n', và luôn giữ lại phần tử cuối vì nó có thể
-      // còn dở. JSON.parse thẳng từng chunk sẽ vỡ ngẫu nhiên.
-      const parts = buffer.split('\n\n');
-      buffer = parts.pop();
+        // Chunk mạng KHÔNG trùng ranh giới event: một event có thể bị cắt làm
+        // đôi giữa hai chunk, hoặc ba event về chung một chunk. Nên phải tích
+        // buffer, tách theo '\n\n', và luôn giữ lại phần tử cuối vì nó có thể
+        // còn dở. JSON.parse thẳng từng chunk sẽ vỡ ngẫu nhiên.
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop();
 
-      for (const part of parts) {
-        if (!part.startsWith('data: ')) continue;
-        try {
-          handleEvent(JSON.parse(part.slice(6)));
-        } catch (err) {
-          console.error('Event hỏng:', part, err);
+        for (const part of parts) {
+          if (!part.startsWith('data: ')) continue;
+          try {
+            handleEvent(JSON.parse(part.slice(6)));
+          } catch (err) {
+            console.error('Event hỏng:', part, err);
+          }
         }
       }
+    } catch (err) {
+      addBubble('<div class="error-box">Mất kết nối với backend giữa chừng.</div>', 'bot');
+    } finally {
+      // Chạy đúng một lần cho mọi cách vòng lặp kết thúc: xong bình thường
+      // (event 'done'), stream đóng mà thiếu event 'done', hoặc đứt giữa chừng.
+      setBusy(false);
     }
-
-    setBusy(false);  // phòng khi stream đứt mà chưa kịp nhận event 'done'
   }
 
   function runAction(kind) {
