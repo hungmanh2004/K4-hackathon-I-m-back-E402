@@ -55,6 +55,14 @@ def test_depth_over_four_is_flagged():
     assert any("cấp" in i for i in r["issues"])
 
 
+def test_depth_of_exactly_four_passes():
+    # 3 nhánh chính để không đụng cảnh báo "quá ít nhánh" — chỉ cô lập biên độ sâu.
+    ok = "# A\n## B\n### C\n#### D [Tr.1]\n## E\n### F [Tr.2]\n## G\n### H [Tr.3]\n"
+    r = tools.validate_mindmap(ok, n_pages=44)
+    assert r["max_depth"] == 4
+    assert r["issues"] == []
+
+
 # --- execute_tool ---
 
 def test_list_pages_reports_every_page():
