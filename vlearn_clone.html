@@ -24,7 +24,7 @@
       --green: #10b981;
       --topbar-h: 44px;
       --toolbar-h: 40px;
-      --sidebar-w: 280px;
+      --sidebar-w: 420px;
     }
     body {
       font-family: 'Inter', sans-serif;
@@ -177,7 +177,38 @@
     .chat-input-field::placeholder { color: var(--gray-400); }
     .send-btn { width: 30px; height: 30px; border-radius: 8px; border: none; background: var(--blue-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .send-btn:hover { background: var(--blue-dark); }
+
+    /* --- Agent UI --- */
+    .action-buttons { display: flex; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--gray-200); flex-shrink: 0; }
+    .action-btn { flex: 1; height: 30px; border-radius: 6px; border: 1px solid var(--gray-200); background: var(--white); color: var(--gray-700); font-size: 11.5px; font-family: 'Inter', sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .action-btn:hover:not(:disabled) { background: var(--blue-light); border-color: var(--blue-primary); color: var(--blue-primary); }
+    .action-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .trace-panel { padding: 6px 12px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); font-size: 10.5px; color: var(--gray-600); max-height: 110px; overflow-y: auto; flex-shrink: 0; }
+    .trace-panel:empty { display: none; }
+    .trace-line { padding: 1px 0; display: flex; gap: 5px; }
+    .trace-line .tick { color: var(--green); }
+
+    .output-panel { display: none; flex-direction: column; border-bottom: 1px solid var(--gray-200); flex-shrink: 0; background: var(--white); }
+    .output-panel.open { display: flex; }
+    .output-panel.expanded { position: fixed; inset: 0; z-index: 500; border: none; }
+    .tab-bar { display: flex; gap: 2px; padding: 6px 8px 0; border-bottom: 1px solid var(--gray-200); align-items: center; }
+    .tab { height: 26px; padding: 0 8px; border: none; background: transparent; border-radius: 6px 6px 0 0; font-size: 11.5px; font-family: 'Inter', sans-serif; color: var(--gray-500); cursor: pointer; }
+    .tab.active { background: var(--blue-light); color: var(--blue-primary); font-weight: 600; }
+    .tab-spacer { margin-left: auto; }
+    .tab-content { display: none; padding: 10px 12px; overflow: auto; height: 320px; font-size: 12px; line-height: 1.55; }
+    .output-panel.expanded .tab-content { height: calc(100vh - 40px); }
+    .tab-content.active { display: block; }
+    .tab-content h1, .tab-content h2, .tab-content h3 { font-size: 13px; margin: 8px 0 4px; }
+    .tab-content ul { padding-left: 18px; }
+    .tab-content code { background: var(--gray-100); padding: 1px 4px; border-radius: 3px; }
+    #mindmapSvg { width: 100%; height: 100%; }
+    .issue-banner { background: #fef3c7; border: 1px solid #fbbf24; color: #92400e; padding: 6px 8px; border-radius: 6px; font-size: 11px; margin-bottom: 8px; }
+    .audio-script { margin-top: 10px; font-size: 11.5px; color: var(--gray-600); white-space: pre-wrap; }
+    .error-box { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 8px 10px; border-radius: 6px; font-size: 11.5px; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
 </head>
 <body>
 
@@ -285,6 +316,29 @@
       </div>
     </div>
     <div class="context-bar">Ngu canh: <span>Slide trang 1</span></div>
+    <div class="action-buttons">
+      <button class="action-btn" id="btnSummary" onclick="runAction('summary')">📝 Tóm tắt</button>
+      <button class="action-btn" id="btnMindmap" onclick="runAction('mindmap')">🧠 Mind Map</button>
+      <button class="action-btn" id="btnAudio" onclick="runAction('audio')">🎧 Audio</button>
+    </div>
+    <div class="trace-panel" id="tracePanel"></div>
+    <div class="output-panel" id="outputPanel">
+      <div class="tab-bar">
+        <button class="tab active" data-tab="summary" onclick="showTab('summary')">📝 Tóm tắt</button>
+        <button class="tab" data-tab="mindmap" onclick="showTab('mindmap')">🧠 Mind Map</button>
+        <button class="tab" data-tab="audio" onclick="showTab('audio')">🎧 Audio</button>
+        <span class="tab-spacer"></span>
+        <button class="tab" onclick="toggleExpand()" title="Phóng to / thu nhỏ">⛶</button>
+      </div>
+      <div class="tab-content active" id="tab-summary"></div>
+      <div class="tab-content" id="tab-mindmap">
+        <svg id="mindmapSvg"></svg>
+      </div>
+      <div class="tab-content" id="tab-audio">
+        <audio id="audioPlayer" controls style="width:100%"></audio>
+        <div class="audio-script" id="audioScript"></div>
+      </div>
+    </div>
     <div class="chat-messages" id="chatMessages">
       <div>
         <div class="msg-bubble msg-bot">
@@ -331,36 +385,207 @@
   function updatePageInfo() { document.getElementById('pageInfo').textContent = 'Trang '+currentPage+' / '+totalPages; }
   function nextPage() { if(currentPage<totalPages){currentPage++;updatePageInfo();} }
   function prevPage() { if(currentPage>1){currentPage--;updatePageInfo();} }
-  const replies = [
-    "HCI (Human-Computer Interaction) la linh vuc nghien cuu cach con nguoi tuong tac voi may tinh va thiet ke cac he thong than thien voi nguoi dung.",
-    "UX (User Experience) tap trung vao trai nghiem tong the cua nguoi dung, con UI (User Interface) la phan giao dien ma nguoi dung nhin thay va tuong tac.",
-    "Day la cau hoi hay! Hay xem lai slide hien tai de tim them thong tin chi tiet nhe.",
-    "Trong HCI, nguyen tac user-centered design dat nguoi dung lam trung tam cua qua trinh thiet ke.",
-    "Ban co muon minh giai thich them ve khai niem nay khong? Toi co the lay vi du tu cac slide tiep theo."
-  ];
-  let ri = 0;
+  function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+  function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,80)+'px'; }
+
+  // ---------- Agent client ----------
+  const API_BASE = 'http://localhost:8000';
+
+  // Ba nút chỉ là shortcut bơm câu tiếng Việt cố định vào CÙNG agent loop
+  // mà ô chat dùng — không có endpoint riêng cho từng tính năng.
+  const PRESETS = {
+    summary: 'Tóm tắt tài liệu này, mỗi ý ghi rõ nguồn trang.',
+    mindmap: 'Vẽ sơ đồ tư duy cho toàn bộ tài liệu này.',
+    audio:   'Viết script podcast ngắn cho tài liệu này rồi đọc thành audio.',
+  };
+
+  let busy = false;
+
+  function setBusy(state) {
+    busy = state;
+    ['btnSummary', 'btnMindmap', 'btnAudio'].forEach(id => {
+      document.getElementById(id).disabled = state;
+    });
+  }
+
+  function showTab(name) {
+    document.querySelectorAll('.tab[data-tab]').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === name);
+    });
+    document.querySelectorAll('.tab-content').forEach(c => {
+      c.classList.toggle('active', c.id === 'tab-' + name);
+    });
+    document.getElementById('outputPanel').classList.add('open');
+  }
+
+  function toggleExpand() {
+    document.getElementById('outputPanel').classList.toggle('expanded');
+  }
+
+  function addTrace(text, done) {
+    const panel = document.getElementById('tracePanel');
+    const line = document.createElement('div');
+    line.className = 'trace-line';
+    line.innerHTML = (done ? '<span class="tick">✓</span>' : '<span>⋯</span>')
+                   + '<span>' + text.replace(/</g, '&lt;') + '</span>';
+    panel.appendChild(line);
+    panel.scrollTop = panel.scrollHeight;
+    return line;
+  }
+
+  function addBubble(html, who) {
+    const c = document.getElementById('chatMessages');
+    const wrap = document.createElement('div');
+    if (who === 'user') {
+      wrap.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
+      wrap.innerHTML = '<div class="msg-bubble msg-user">' + html + '</div>'
+                     + '<div class="msg-time right">Ban · vua xong</div>';
+    } else {
+      wrap.innerHTML = '<div class="msg-bubble msg-bot">' + html + '</div>'
+                     + '<div class="msg-time">VLearn Tutor · vua xong</div>';
+    }
+    c.appendChild(wrap);
+    c.scrollTop = c.scrollHeight;
+    return wrap;
+  }
+
+  function renderArtifact(ev) {
+    if (ev.kind === 'summary') {
+      document.getElementById('tab-summary').innerHTML = marked.parse(ev.content);
+      showTab('summary');
+
+    } else if (ev.kind === 'mindmap') {
+      const box = document.getElementById('tab-mindmap');
+      const warning = (ev.issues && ev.issues.length)
+        ? '<div class="issue-banner">⚠ ' + ev.issues.join('<br>⚠ ') + '</div>'
+        : '';
+
+      // Nếu markmap (CDN) hỏng hoặc không render được, vẫn phải thấy nội dung.
+      // Outline markdown thô đọc được bằng mắt — degrade gracefully thay vì
+      // để trống màn hình giữa lúc demo.
+      const fallback = '<pre style="white-space:pre-wrap;font-size:11.5px">'
+                     + ev.content.replace(/</g, '&lt;') + '</pre>';
+
+      try {
+        if (!window.markmap || !window.markmap.autoLoader) {
+          throw new Error('markmap chưa nạp được từ CDN');
+        }
+        // markmap-autoloader quét và render các thẻ .markmap
+        box.innerHTML = warning + '<div class="markmap"><script type="text/template">'
+                      + ev.content + '<\/script></div>';
+        window.markmap.autoLoader.renderAll();
+      } catch (err) {
+        console.warn('markmap hỏng, dùng outline thô:', err);
+        box.innerHTML = warning + fallback;
+      }
+      showTab('mindmap');
+
+    } else if (ev.kind === 'audio') {
+      document.getElementById('audioPlayer').src = API_BASE + ev.url;
+      document.getElementById('audioScript').textContent = ev.script || '';
+      showTab('audio');
+    }
+  }
+
+  function handleEvent(ev) {
+    if (ev.type === 'status') {
+      addTrace(ev.text, false);
+
+    } else if (ev.type === 'tool_call') {
+      addTrace(ev.name + '(' + JSON.stringify(ev.args).slice(0, 60) + ')', false);
+
+    } else if (ev.type === 'tool_result') {
+      addTrace(ev.summary, true);
+
+    } else if (ev.type === 'artifact') {
+      renderArtifact(ev);
+
+    } else if (ev.type === 'message') {
+      addBubble(marked.parse(ev.content || ''), 'bot');
+
+    } else if (ev.type === 'error') {
+      addBubble('<div class="error-box">Lỗi: '
+                + String(ev.message).replace(/</g, '&lt;') + '</div>', 'bot');
+
+    } else if (ev.type === 'done') {
+      setBusy(false);
+    }
+  }
+
+  async function askAgent(message) {
+    if (busy) return;
+    setBusy(true);
+    document.getElementById('tracePanel').innerHTML = '';
+
+    let res;
+    try {
+      res = await fetch(API_BASE + '/api/agent', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message}),
+      });
+    } catch (err) {
+      addBubble('<div class="error-box">Không kết nối được backend. '
+              + 'Đã chạy <code>uvicorn server:app --port 8000</code> chưa?</div>', 'bot');
+      setBusy(false);
+      return;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, {stream: true});
+
+      // Chunk mạng KHÔNG trùng ranh giới event: một event có thể bị cắt làm
+      // đôi giữa hai chunk, hoặc ba event về chung một chunk. Nên phải tích
+      // buffer, tách theo '\n\n', và luôn giữ lại phần tử cuối vì nó có thể
+      // còn dở. JSON.parse thẳng từng chunk sẽ vỡ ngẫu nhiên.
+      const parts = buffer.split('\n\n');
+      buffer = parts.pop();
+
+      for (const part of parts) {
+        if (!part.startsWith('data: ')) continue;
+        try {
+          handleEvent(JSON.parse(part.slice(6)));
+        } catch (err) {
+          console.error('Event hỏng:', part, err);
+        }
+      }
+    }
+
+    setBusy(false);  // phòng khi stream đứt mà chưa kịp nhận event 'done'
+  }
+
+  function runAction(kind) {
+    addBubble(PRESETS[kind], 'user');
+    askAgent(PRESETS[kind]);
+  }
+
   function sendMessage() {
     const inp = document.getElementById('chatInput');
     const txt = inp.value.trim();
-    if(!txt) return;
-    const c = document.getElementById('chatMessages');
-    const ud = document.createElement('div');
-    ud.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
-    ud.innerHTML = '<div class="msg-bubble msg-user">'+txt.replace(/</g,'&lt;')+'</div><div class="msg-time right">Ban · vua xong</div>';
-    c.appendChild(ud);
-    inp.value=''; inp.style.height='auto';
-    const td = document.createElement('div');
-    td.innerHTML='<div class="msg-bubble msg-bot" style="color:#9ca3af;font-style:italic">VLearn Tutor dang tra loi...</div>';
-    c.appendChild(td); c.scrollTop=c.scrollHeight;
-    setTimeout(()=>{
-      td.remove();
-      const bd = document.createElement('div');
-      bd.innerHTML='<div class="msg-bubble msg-bot">'+replies[ri++%replies.length]+'</div><div class="msg-time">VLearn Tutor · vua xong</div>';
-      c.appendChild(bd); c.scrollTop=c.scrollHeight;
-    },1200);
+    if (!txt || busy) return;
+    inp.value = '';
+    inp.style.height = 'auto';
+    addBubble(txt.replace(/</g, '&lt;'), 'user');
+    askAgent(txt);
   }
-  function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
-  function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,80)+'px'; }
+
+  // Lấy số trang thật từ backend thay vì hardcode.
+  window.addEventListener('load', async () => {
+    try {
+      const health = await (await fetch(API_BASE + '/health')).json();
+      totalPages = health.page_count;
+      updatePageInfo();
+    } catch (err) {
+      console.warn('Backend chưa chạy, giữ số trang mặc định.');
+    }
+  });
 </script>
 </body>
 </html>
