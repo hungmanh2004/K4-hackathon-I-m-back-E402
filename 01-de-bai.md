@@ -3,7 +3,7 @@
 **Bối cảnh.** Khoá đang vận hành các sản phẩm AI nội bộ phục vụ ~1.000 học viên. Nhóm bạn là product team: chọn một hướng, tìm pain có bằng chứng, và build prototype **một tính năng**.
 
 ## Chọn 1 trong 3 hướng
-
+ 
 ### Hướng A — VLearn
 Nền tảng học tập thích ứng của khoá; có AI tutor trong trang học (bôi đen đoạn tài liệu + hỏi, tutor trả lời kèm trích dẫn [trang N]).
 - **Tối ưu AI tutor hiện có** — mining chatlog để tìm điểm tutor đang làm chưa tốt, chọn một điểm và cải thiện đến nơi đến chốn.

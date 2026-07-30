@@ -1,0 +1,366 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VLearn - HCI UX-UI 01</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue-primary: #1a56db;
+      --blue-light: #e8f0fe;
+      --blue-dark: #1341b0;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --white: #ffffff;
+      --green: #10b981;
+      --topbar-h: 44px;
+      --toolbar-h: 40px;
+      --sidebar-w: 280px;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      height: var(--topbar-h);
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      padding: 0 12px 0 0;
+      gap: 8px;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+    .topbar-back {
+      width: 40px;
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid var(--gray-200);
+      cursor: pointer;
+      color: var(--gray-500);
+    }
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px 0 8px;
+      border-right: 1px solid var(--gray-200);
+      height: var(--topbar-h);
+    }
+    .logo-icon {
+      width: 26px; height: 26px;
+      background: linear-gradient(135deg, #1a56db, #0e3fa3);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 800; font-size: 14px;
+    }
+    .logo-text { font-weight: 700; font-size: 15px; color: var(--blue-primary); }
+    .file-section {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 8px;
+      border-right: 1px solid var(--gray-200);
+      height: var(--topbar-h);
+    }
+    .file-info { display: flex; flex-direction: column; gap: 1px; }
+    .file-name { font-size: 12.5px; font-weight: 600; color: var(--gray-800); }
+    .file-path { font-size: 10px; color: var(--gray-400); }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+    .lang-badge {
+      height: 26px; padding: 0 8px;
+      border-radius: 5px; background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      font-size: 11px; font-weight: 600; color: var(--gray-600);
+      cursor: pointer; display: flex; align-items: center;
+    }
+    .icon-btn {
+      width: 30px; height: 30px; border-radius: 6px;
+      border: none; background: transparent;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--gray-500);
+    }
+    .icon-btn:hover { background: var(--gray-100); }
+    .main-content { display: flex; flex: 1; overflow: hidden; }
+    .pdf-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .pdf-toolbar {
+      height: var(--toolbar-h);
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center;
+      padding: 0 12px; gap: 4px; flex-shrink: 0;
+    }
+    .tg { display: flex; align-items: center; gap: 2px; padding-right: 10px; border-right: 1px solid var(--gray-200); margin-right: 6px; }
+    .tg:last-child { border-right: none; }
+    .tb-btn {
+      height: 28px; padding: 0 8px; border-radius: 6px;
+      border: none; background: transparent;
+      color: var(--gray-600); font-size: 12px;
+      font-family: 'Inter', sans-serif; cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+      transition: background .15s; white-space: nowrap;
+    }
+    .tb-btn:hover { background: var(--gray-100); }
+    .tb-btn.active { background: var(--blue-light); color: var(--blue-primary); font-weight: 500; }
+    .page-ind { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--gray-700); font-weight: 500; padding: 0 6px; }
+    .page-note { font-size: 11px; color: var(--blue-primary); }
+    .zoom-group { display: flex; align-items: center; gap: 2px; }
+    .zoom-btn { width: 26px; height: 26px; border-radius: 5px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--gray-600); }
+    .zoom-btn:hover { background: var(--gray-100); }
+    .zoom-val { font-size: 12px; color: var(--gray-700); font-weight: 500; padding: 0 4px; min-width: 36px; text-align: center; }
+    .tb-right { margin-left: auto; display: flex; align-items: center; gap: 2px; }
+    .tb-icon { width: 28px; height: 28px; border-radius: 6px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-500); }
+    .tb-icon:hover { background: var(--gray-100); }
+    .pdf-viewer { flex: 1; overflow: hidden; }
+    .pdf-frame { width: 100%; height: 100%; border: none; display: block; }
+    .sidebar-toggle { position: relative; z-index: 10; }
+    .toggle-btn {
+      position: absolute; top: 50%; transform: translateY(-50%); left: -14px;
+      width: 28px; height: 48px;
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-right: none; border-radius: 8px 0 0 8px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--gray-500); box-shadow: -2px 0 6px rgba(0,0,0,.06);
+    }
+    .toggle-btn:hover { background: var(--gray-50); }
+    .chatbot-sidebar {
+      width: var(--sidebar-w); background: var(--white);
+      border-left: 1px solid var(--gray-200);
+      display: flex; flex-direction: column; flex-shrink: 0;
+      transition: width .25s ease; overflow: hidden;
+    }
+    .chatbot-sidebar.collapsed { width: 0; border-left: none; }
+    .chat-header { padding: 10px 12px 8px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .chat-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #1a56db, #10b981); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .chat-header-info { flex: 1; min-width: 0; }
+    .chat-title { font-size: 13px; font-weight: 700; color: var(--gray-800); }
+    .chat-subtitle { font-size: 10px; color: var(--green); font-weight: 500; display: flex; align-items: center; gap: 4px; }
+    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.8)} }
+    .chat-header-actions { display: flex; align-items: center; gap: 2px; }
+    .chat-hdr-btn { width: 26px; height: 26px; border-radius: 5px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-400); }
+    .chat-hdr-btn:hover { background: var(--gray-100); color: var(--gray-600); }
+    .slide-ref { font-size: 10.5px; color: var(--gray-400); padding: 0 2px; white-space: nowrap; }
+    .context-bar { padding: 6px 12px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); font-size: 10.5px; color: var(--gray-500); flex-shrink: 0; }
+    .context-bar span { color: var(--blue-primary); font-weight: 500; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 2px; }
+    .msg-bubble { max-width: 90%; padding: 8px 10px; border-radius: 10px; font-size: 12.5px; line-height: 1.5; }
+    .msg-bot { background: var(--gray-100); color: var(--gray-800); align-self: flex-start; border-bottom-left-radius: 3px; }
+    .msg-user { background: var(--blue-primary); color: var(--white); align-self: flex-end; border-bottom-right-radius: 3px; }
+    .msg-time { font-size: 10px; color: var(--gray-400); margin-top: 2px; padding: 0 2px; }
+    .msg-time.right { text-align: right; }
+    .chat-page-nav { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 12px; border-top: 1px solid var(--gray-200); flex-shrink: 0; }
+    .page-nav-btn { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--gray-200); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-500); font-size: 12px; }
+    .page-nav-btn:hover { background: var(--gray-100); }
+    .page-nav-info { font-size: 11px; color: var(--gray-500); }
+    .chat-input-area { padding: 10px 12px 12px; border-top: 1px solid var(--gray-200); flex-shrink: 0; }
+    .chat-input-box { display: flex; align-items: flex-end; gap: 6px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 6px 8px 6px 10px; transition: border-color .2s; }
+    .chat-input-box:focus-within { border-color: var(--blue-primary); background: var(--white); }
+    .chat-input-field { flex: 1; border: none; background: transparent; font-size: 12.5px; font-family: 'Inter', sans-serif; color: var(--gray-800); resize: none; outline: none; min-height: 20px; max-height: 80px; line-height: 1.4; }
+    .chat-input-field::placeholder { color: var(--gray-400); }
+    .send-btn { width: 30px; height: 30px; border-radius: 8px; border: none; background: var(--blue-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .send-btn:hover { background: var(--blue-dark); }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+  </div>
+  <div class="logo-section">
+    <div class="logo-icon">V</div>
+    <span class="logo-text">VLearn</span>
+  </div>
+  <div class="file-section">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e53935" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <div class="file-info">
+      <div class="file-name">HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf</div>
+      <div class="file-path">K4-hackathon-I-m-back-E402 · HCI Course Materials</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="lang-badge">VI</span>
+    <button class="icon-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="pdf-area">
+    <div class="pdf-toolbar">
+      <div class="tg">
+        <button class="tb-btn active" id="btn-read" onclick="setMode('read')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          Doc
+        </button>
+        <button class="tb-btn" id="btn-pen" onclick="setMode('pen')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          But
+        </button>
+        <button class="tb-btn" id="btn-highlight" onclick="setMode('highlight')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v11M5 7h14"/></svg>
+          Highlight
+        </button>
+        <button class="tb-btn">&#8943;</button>
+      </div>
+      <div class="tg">
+        <div class="page-ind">
+          <span>Trang 1</span>
+          <span style="color:var(--gray-300)">·</span>
+          <span class="page-note">1 note</span>
+        </div>
+      </div>
+      <div class="tg">
+        <div class="zoom-group">
+          <button class="zoom-btn" onclick="zoomOut()">&#8722;</button>
+          <span class="zoom-val" id="zoom-label">100%</span>
+          <button class="zoom-btn" onclick="zoomIn()">+</button>
+        </div>
+      </div>
+      <div class="tb-right">
+        <button class="tb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="tb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        </button>
+        <button class="tb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9M3 12V7m0 5H8"/></svg>
+        </button>
+        <button class="tb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        </button>
+        <button class="tb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="pdf-viewer">
+      <iframe class="pdf-frame" src="HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf" title="HCI UX-UI 01"></iframe>
+    </div>
+  </div>
+
+  <div class="sidebar-toggle">
+    <button class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()">
+      <svg id="toggleIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="chatbot-sidebar" id="chatSidebar">
+    <div class="chat-header">
+      <div class="chat-avatar">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </div>
+      <div class="chat-header-info">
+        <div class="chat-title">VLearn Tutor</div>
+        <div class="chat-subtitle"><span class="pulse-dot"></span> Tra ly hoc theo ngu canh</div>
+      </div>
+      <div class="chat-header-actions">
+        <button class="chat-hdr-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        </button>
+        <button class="chat-hdr-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <span class="slide-ref">Trang slide: 1</span>
+      </div>
+    </div>
+    <div class="context-bar">Ngu canh: <span>Slide trang 1</span></div>
+    <div class="chat-messages" id="chatMessages">
+      <div>
+        <div class="msg-bubble msg-bot">
+          Xin chao! Minh la VLearn Tutor. Ban co the boi den mot doan tren slide de hoi hoac gui cau hoi tu do nhe!
+        </div>
+        <div class="msg-time">VLearn Tutor · vua xong</div>
+      </div>
+    </div>
+    <div class="chat-page-nav">
+      <button class="page-nav-btn" onclick="prevPage()">&#8592;</button>
+      <span class="page-nav-info" id="pageInfo">Trang 1 / 44</span>
+      <button class="page-nav-btn" onclick="nextPage()">&#8594;</button>
+    </div>
+    <div class="chat-input-area">
+      <div class="chat-input-box">
+        <textarea class="chat-input-field" id="chatInput" placeholder="Nhap cau hoi hoac boi den tai lieu..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" onclick="sendMessage()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let sidebarOpen = true;
+  function toggleSidebar() {
+    const s = document.getElementById('chatSidebar');
+    const icon = document.getElementById('toggleIcon');
+    sidebarOpen = !sidebarOpen;
+    s.classList.toggle('collapsed', !sidebarOpen);
+    icon.innerHTML = sidebarOpen
+      ? '<path d="M9 18l6-6-6-6"/>'
+      : '<path d="M15 18l-6-6 6-6"/>';
+  }
+  function setMode(m) {
+    ['read','pen','highlight'].forEach(x => document.getElementById('btn-'+x).classList.remove('active'));
+    document.getElementById('btn-'+m).classList.add('active');
+  }
+  let zoom = 100;
+  function zoomIn() { zoom = Math.min(zoom+10,200); document.getElementById('zoom-label').textContent=zoom+'%'; }
+  function zoomOut() { zoom = Math.max(zoom-10,50); document.getElementById('zoom-label').textContent=zoom+'%'; }
+  let currentPage = 1, totalPages = 44;
+  function updatePageInfo() { document.getElementById('pageInfo').textContent = 'Trang '+currentPage+' / '+totalPages; }
+  function nextPage() { if(currentPage<totalPages){currentPage++;updatePageInfo();} }
+  function prevPage() { if(currentPage>1){currentPage--;updatePageInfo();} }
+  const replies = [
+    "HCI (Human-Computer Interaction) la linh vuc nghien cuu cach con nguoi tuong tac voi may tinh va thiet ke cac he thong than thien voi nguoi dung.",
+    "UX (User Experience) tap trung vao trai nghiem tong the cua nguoi dung, con UI (User Interface) la phan giao dien ma nguoi dung nhin thay va tuong tac.",
+    "Day la cau hoi hay! Hay xem lai slide hien tai de tim them thong tin chi tiet nhe.",
+    "Trong HCI, nguyen tac user-centered design dat nguoi dung lam trung tam cua qua trinh thiet ke.",
+    "Ban co muon minh giai thich them ve khai niem nay khong? Toi co the lay vi du tu cac slide tiep theo."
+  ];
+  let ri = 0;
+  function sendMessage() {
+    const inp = document.getElementById('chatInput');
+    const txt = inp.value.trim();
+    if(!txt) return;
+    const c = document.getElementById('chatMessages');
+    const ud = document.createElement('div');
+    ud.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
+    ud.innerHTML = '<div class="msg-bubble msg-user">'+txt.replace(/</g,'&lt;')+'</div><div class="msg-time right">Ban · vua xong</div>';
+    c.appendChild(ud);
+    inp.value=''; inp.style.height='auto';
+    const td = document.createElement('div');
+    td.innerHTML='<div class="msg-bubble msg-bot" style="color:#9ca3af;font-style:italic">VLearn Tutor dang tra loi...</div>';
+    c.appendChild(td); c.scrollTop=c.scrollHeight;
+    setTimeout(()=>{
+      td.remove();
+      const bd = document.createElement('div');
+      bd.innerHTML='<div class="msg-bubble msg-bot">'+replies[ri++%replies.length]+'</div><div class="msg-time">VLearn Tutor · vua xong</div>';
+      c.appendChild(bd); c.scrollTop=c.scrollHeight;
+    },1200);
+  }
+  function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+  function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,80)+'px'; }
+</script>
+</body>
+</html>

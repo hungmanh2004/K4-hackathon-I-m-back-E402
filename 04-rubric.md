@@ -1,7 +1,7 @@
 # Rubric — 100 điểm = 25 điểm nộp checkpoint + 75 điểm chấm bài nộp
 
 > **Phạm vi & nguyên tắc:** chấm trên artifact trong repo — mỗi con điểm trỏ về một file, phúc khảo được. Rubric chấm chuỗi quyết định và bằng chứng, không chấm mức độ hoành tráng của sản phẩm. Kết quả đo được ghi nhận trung thực — kể cả khi không đạt quality bar — vẫn được tính đủ điểm mục tương ứng; số liệu bị chỉnh sửa hoặc che giấu sẽ không được tính. Điểm vòng demo, chấm chéo zone và thưởng thêm (nếu có) thuộc thể lệ sự kiện công bố lúc khai mạc — không thuộc file này.
-
+ 
 ## PHẦN 1 — 25 ĐIỂM NỘP: mỗi checkpoint 5 điểm
 
 | CP1 | CP2 | CP3 | CP4 | CP5 |
