@@ -1,0 +1,52 @@
+[
+  {
+    "id": "S01",
+    "message": "Tóm tắt tài liệu này giúp tôi",
+    "checks": ["no_error", "summary_nonempty", "summary_has_citation", "within_iteration_limit"]
+  },
+  {
+    "id": "S02",
+    "message": "Cho tôi các ý chính của bài giảng dưới dạng gạch đầu dòng",
+    "checks": ["no_error", "summary_nonempty", "summary_has_citation", "within_iteration_limit"]
+  },
+  {
+    "id": "M01",
+    "message": "Vẽ sơ đồ tư duy cho toàn bộ tài liệu",
+    "checks": ["no_error", "mindmap_pages_valid", "mindmap_min_branches_3", "mindmap_max_depth_4", "within_iteration_limit"]
+  },
+  {
+    "id": "M02",
+    "message": "Lập bản đồ khái niệm của bài này, mỗi node ghi rõ trang",
+    "checks": ["no_error", "mindmap_pages_valid", "mindmap_min_branches_3", "within_iteration_limit"]
+  },
+  {
+    "id": "C01",
+    "message": "Tóm tắt rồi vẽ sơ đồ luôn",
+    "checks": ["no_error", "summary_nonempty", "mindmap_pages_valid", "single_read_pass", "within_iteration_limit"]
+  },
+  {
+    "id": "C02",
+    "message": "Tôi muốn vừa có bản tóm tắt vừa có sơ đồ tư duy của tài liệu",
+    "checks": ["no_error", "summary_nonempty", "mindmap_pages_valid", "within_iteration_limit"]
+  },
+  {
+    "id": "A01",
+    "message": "Đọc tóm tắt tài liệu này thành podcast cho tôi nghe",
+    "checks": ["no_error", "audio_generated", "audio_script_has_no_page_markers", "within_iteration_limit"]
+  },
+  {
+    "id": "E01",
+    "message": "Tóm tắt trang 999 của tài liệu",
+    "checks": ["no_error", "within_iteration_limit"]
+  },
+  {
+    "id": "E02",
+    "message": "Giải thích định lý Pythagore trong tài liệu này",
+    "checks": ["no_error", "within_iteration_limit", "no_fabricated_summary_pages"]
+  },
+  {
+    "id": "E03",
+    "message": "Tài liệu này có bao nhiêu trang và nói về chủ đề gì?",
+    "checks": ["no_error", "within_iteration_limit"]
+  }
+]
