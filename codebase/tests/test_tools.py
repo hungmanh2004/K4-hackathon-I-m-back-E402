@@ -13,14 +13,13 @@ def loaded_document():
 # --- validate_mindmap ---
 
 GOOD_MAP = """# Xác định bài toán AI
-- Xác định bài toán cho AI là bước quan trọng, từ yêu cầu mơ hồ đến Problem Statement rõ ràng [Tr.1].
-- Mô hình Double Diamond giúp mở rộng và thu hẹp bài toán: Discover và Define cho vấn đề, Develop và Deliver cho giải pháp [Tr.3].
-- Sai lầm thường gặp khi ưu tiên giải pháp mà không rõ ràng về quy trình vận hành, điểm nghẽn, và không thiết lập kịch bản kiểm thử [Tr.7].
-- Chỉ số đo lường cần phản ánh kết quả cuối cùng và các đòn bẩy có thể tác động nhằm tối ưu hóa quy trình [Tr.12].
-- Ba mô hình cơ bản: Prompt Chaining, Routing, và Parallelization giúp xử lý bài toán hiệu quả [Tr.20].
-- Cây quyết định giúp lựa chọn cấp độ giải pháp, tránh độ phức tạp không cần thiết [Tr.21].
-- Reward function định hình trải nghiệm người dùng và cần được thiết kế liên chức năng [Tr.22].
-- Có 6 yếu tố bài toán cốt lõi và 3 yếu tố quyết định AI cần chú ý [Tr.27].
+- Mô hình Double Diamond ... [Tr.3].
+- Sai lầm thường gặp ... [Tr.7].
+- Chỉ số đo lường ... [Tr.12].
+- Ba mô hình cơ bản: Prompt Chaining, Routing, và Parallelization ... [Tr.20].
+- Cây quyết định ... [Tr.21].
+- Reward function ... [Tr.22].
+- 6 yếu tố bài toán cốt lõi ... 3 yếu tố quyết định ... [Tr.27].
 """
 
 
