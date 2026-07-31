@@ -34,6 +34,10 @@ app.add_middleware(
 
 class AgentRequest(BaseModel):
     message: str
+    # Lịch sử vài lượt gần nhất trong CÙNG tab trình duyệt (không phải lưu trữ
+    # dài hạn — spec.md §4 loại bỏ database/đăng nhập, không loại bỏ ngữ cảnh
+    # trong-phiên). Cho phép agent hiểu các câu tham chiếu như "mind map cũ".
+    history: list[dict] = []
 
 
 @app.on_event("startup")
@@ -65,7 +69,7 @@ def health() -> dict:
 def api_agent(req: AgentRequest) -> StreamingResponse:
     def event_stream():
         try:
-            for event in agent.run_stream(req.message):
+            for event in agent.run_stream(req.message, history=req.history):
                 yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
         except Exception as exc:
             # Không bắt ở đây thì stream đứt im lặng và frontend treo loading mãi.

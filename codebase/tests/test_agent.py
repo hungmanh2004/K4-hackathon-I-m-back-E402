@@ -125,3 +125,62 @@ def test_run_collects_the_same_events_as_run_stream():
 def test_system_prompt_states_the_real_page_count():
     prompt = agent.build_system_prompt(44)
     assert "44" in prompt
+
+
+# --- Lịch sử hội thoại trong phiên (không lưu dài hạn — xem spec.md §4) ---
+
+def test_sanitize_history_drops_malformed_entries():
+    dirty = [
+        {"role": "user", "content": "câu hỏi cũ"},
+        {"role": "system", "content": "không được phép giả làm system"},
+        {"role": "assistant", "content": 123},
+        "không phải dict",
+        {"role": "assistant", "content": "  "},
+        {"role": "assistant", "content": "câu trả lời cũ"},
+    ]
+    cleaned = agent._sanitize_history(dirty)
+    assert cleaned == [
+        {"role": "user", "content": "câu hỏi cũ"},
+        {"role": "assistant", "content": "câu trả lời cũ"},
+    ]
+
+
+def test_sanitize_history_caps_to_max_messages():
+    long_history = [
+        {"role": "user" if i % 2 == 0 else "assistant", "content": f"tin {i}"}
+        for i in range(30)
+    ]
+    cleaned = agent._sanitize_history(long_history)
+    assert len(cleaned) == agent.MAX_HISTORY_MESSAGES
+    assert cleaned[-1]["content"] == "tin 29"
+
+
+def test_sanitize_history_handles_none_and_empty():
+    assert agent._sanitize_history(None) == []
+    assert agent._sanitize_history([]) == []
+
+
+def test_run_stream_sends_sanitized_history_to_the_model():
+    captured = {}
+
+    class RecordingClient:
+        def __init__(self):
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(create=self._create)
+            )
+
+        def _create(self, **kwargs):
+            captured["messages"] = kwargs["messages"]
+            return _response(content="OK")
+
+    history = [
+        {"role": "user", "content": "vẽ mind map"},
+        {"role": "assistant", "content": "[Đã tạo mind map]\n# A\n## B"},
+        {"role": "system", "content": "bị lọc vì không phải user/assistant"},
+    ]
+    list(agent.run_stream("làm chi tiết hơn", client=RecordingClient(), history=history))
+
+    roles = [m["role"] for m in captured["messages"]]
+    assert roles == ["system", "user", "assistant", "user"]
+    assert captured["messages"][-1]["content"] == "làm chi tiết hơn"
+    assert captured["messages"][2]["content"] == "[Đã tạo mind map]\n# A\n## B"

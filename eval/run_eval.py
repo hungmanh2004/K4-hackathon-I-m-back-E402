@@ -137,7 +137,7 @@ CHECKS = {
 
 def main() -> None:
     tools.load_document(PDF_PATH)
-    cases = json.loads(EVAL_TEST.read_text(encoding="utf-8"))
+    cases = json.loads(GOLDEN_SET.read_text(encoding="utf-8"))
 
     rows, total, passed_total = [], 0, 0
 

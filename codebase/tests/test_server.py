@@ -55,6 +55,33 @@ def test_vietnamese_is_not_escaped_in_the_stream(client, monkeypatch):
     assert "\\u" not in res.text
 
 
+def test_agent_endpoint_forwards_history_to_run_stream(client, monkeypatch):
+    captured = {}
+
+    def fake_run_stream(message, **kwargs):
+        captured["message"] = message
+        captured["history"] = kwargs.get("history")
+        return iter([{"type": "done", "iterations": 1}])
+
+    monkeypatch.setattr(server.agent, "run_stream", fake_run_stream)
+
+    history = [{"role": "user", "content": "vẽ mind map"}]
+    client.post("/api/agent", json={"message": "chi tiết hơn", "history": history})
+
+    assert captured["message"] == "chi tiết hơn"
+    assert captured["history"] == history
+
+
+def test_agent_endpoint_defaults_history_to_empty_list(client, monkeypatch):
+    captured = {}
+    monkeypatch.setattr(
+        server.agent, "run_stream",
+        lambda m, **kw: (captured.update(history=kw.get("history")) or iter([{"type": "done", "iterations": 1}])),
+    )
+    client.post("/api/agent", json={"message": "x"})
+    assert captured["history"] == []
+
+
 def test_agent_crash_becomes_an_error_event_not_a_500(client, monkeypatch):
     def exploding(message, **kwargs):
         raise RuntimeError("hỏng giữa chừng")

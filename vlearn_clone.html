@@ -394,6 +394,42 @@
 
   let busy = false;
 
+  // Lịch sử hội thoại CHỈ sống trong biến JS của tab này — mất khi tải lại
+  // trang, không ghi DB, không đăng nhập (đúng non-goal ở spec.md §4). Mục
+  // đích duy nhất: cho agent hiểu các câu tham chiếu kiểu "mind map cũ",
+  // "chi tiết hơn nữa" thay vì mỗi lượt lại bắt đầu từ số không và tạo ra
+  // một kết quả khác hẳn trông như bị "reset".
+  let conversationHistory = [];
+  const MAX_HISTORY_TURNS = 6;
+
+  function truncateForHistory(text, max = 4000) {
+    if (!text) return '';
+    return text.length > max ? text.slice(0, max) + '\n…(cắt bớt)' : text;
+  }
+
+  function recordTurnInHistory(userMessage, state) {
+    const parts = [];
+    if (state.artifacts.summary) {
+      parts.push('[Đã tạo tóm tắt]\n' + truncateForHistory(state.artifacts.summary.content));
+    }
+    if (state.artifacts.mindmap) {
+      parts.push('[Đã tạo mind map — outline markdown]\n' + truncateForHistory(state.artifacts.mindmap.content));
+    }
+    if (state.artifacts.audio) {
+      parts.push('[Đã tạo audio từ script]\n' + truncateForHistory(state.artifacts.audio.script));
+    }
+    if (state.finalMessage) parts.push(state.finalMessage);
+    if (state.error) parts.push('[Lỗi]: ' + state.error);
+
+    conversationHistory.push({role: 'user', content: userMessage});
+    conversationHistory.push({role: 'assistant', content: parts.join('\n\n') || '(không có phản hồi)'});
+
+    const maxMessages = MAX_HISTORY_TURNS * 2;
+    if (conversationHistory.length > maxMessages) {
+      conversationHistory = conversationHistory.slice(-maxMessages);
+    }
+  }
+
   function setBusy(state) {
     busy = state;
     ['btnSummary', 'btnMindmap', 'btnAudio'].forEach(id => {
@@ -527,7 +563,7 @@
     scrollChatToBottom();
   }
 
-  function handleEvent(turn, ev) {
+  function handleEvent(turn, ev, state) {
     if (ev.type === 'status') {
       addTrace(turn, ev.text, false);
 
@@ -539,13 +575,16 @@
 
     } else if (ev.type === 'artifact') {
       renderArtifact(turn, ev);
+      state.artifacts[ev.kind] = ev;
 
     } else if (ev.type === 'message') {
       addBubble(marked.parse(ev.content || ''), 'bot');
+      state.finalMessage = ev.content || '';
 
     } else if (ev.type === 'error') {
       addBubble('<div class="error-box">Lỗi: '
                 + String(ev.message).replace(/</g, '&lt;') + '</div>', 'bot');
+      state.error = ev.message;
 
     } else if (ev.type === 'done') {
       setBusy(false);
@@ -556,13 +595,14 @@
     if (busy) return;
     setBusy(true);
     const turn = createTurn();
+    const state = {finalMessage: '', artifacts: {}, error: null};
 
     let res;
     try {
       res = await fetch(API_BASE + '/api/agent', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({message}),
+        body: JSON.stringify({message, history: conversationHistory}),
       });
     } catch (err) {
       addBubble('<div class="error-box">Không kết nối được backend. '
@@ -597,7 +637,7 @@
         for (const part of parts) {
           if (!part.startsWith('data: ')) continue;
           try {
-            handleEvent(turn, JSON.parse(part.slice(6)));
+            handleEvent(turn, JSON.parse(part.slice(6)), state);
           } catch (err) {
             console.error('Event hỏng:', part, err);
           }
@@ -605,10 +645,12 @@
       }
     } catch (err) {
       addBubble('<div class="error-box">Mất kết nối với backend giữa chừng.</div>', 'bot');
+      state.error = state.error || 'mất kết nối giữa chừng';
     } finally {
       // Chạy đúng một lần cho mọi cách vòng lặp kết thúc: xong bình thường
       // (event 'done'), stream đóng mà thiếu event 'done', hoặc đứt giữa chừng.
       setBusy(false);
+      recordTurnInHistory(message, state);
     }
   }
 

@@ -16,6 +16,7 @@ load_dotenv()
 
 MODEL = "gpt-4o-mini"
 MAX_ITERATIONS = 8
+MAX_HISTORY_MESSAGES = 12  # ~6 lượt gần nhất — đủ ngữ cảnh, không phình token
 
 _client = None
 
@@ -52,18 +53,48 @@ Quy tắc bắt buộc:
   KHÔNG ký hiệu [Tr.N] vì đọc lên nghe rất kỳ.
 - Nếu tài liệu không có thông tin người dùng hỏi, nói thẳng là không có.
 - Trả lời người dùng bằng tiếng Việt, ngắn gọn.
+- Bạn có thể được cung cấp lịch sử vài lượt hội thoại gần nhất (trong phiên làm
+  việc hiện tại, KHÔNG lưu lại sau khi đóng trình duyệt). Nếu người dùng nhắc
+  tới kết quả trước đó ("cũ", "vừa rồi", "bản trên", "chi tiết hơn nữa"), hãy
+  đọc lịch sử đó để biết chính xác nội dung cần chỉnh sửa/mở rộng, rồi emit lại
+  bản đã cập nhật — đừng tạo lại từ đầu theo hướng chung chung. Nếu lịch sử
+  không đủ để xác định người dùng đang nhắc tới cái gì, hỏi lại thay vì đoán.
 """
 
 
-def run_stream(message: str, client=None) -> Iterator[dict]:
-    """Chạy agent, yield từng event một."""
+def _sanitize_history(history: list[dict] | None) -> list[dict]:
+    """Lọc lịch sử hội thoại từ client: chỉ giữ role/content hợp lệ, cắt bớt nếu quá dài.
+
+    Lịch sử tới từ trình duyệt (JS, chỉ sống trong tab hiện tại — không DB,
+    không đăng nhập, mất khi F5) nên không tin tưởng mù quáng cấu trúc của nó.
+    """
+    if not history:
+        return []
+    cleaned = [
+        {"role": h["role"], "content": str(h["content"])}
+        for h in history
+        if isinstance(h, dict)
+        and h.get("role") in ("user", "assistant")
+        and isinstance(h.get("content"), str)
+        and h["content"].strip()
+    ]
+    return cleaned[-MAX_HISTORY_MESSAGES:]
+
+
+def run_stream(message: str, client=None, history: list[dict] | None = None) -> Iterator[dict]:
+    """Chạy agent, yield từng event một.
+
+    history: vài lượt hội thoại gần nhất trong CÙNG phiên trình duyệt (không
+    phải lưu trữ dài hạn — xem non-goal ở spec.md §4), giúp agent hiểu các
+    câu tham chiếu kiểu "mind map cũ", "chi tiết hơn nữa" thay vì mỗi lượt
+    lại bắt đầu từ con số không.
+    """
     client = client or _default_client()
     n_pages = tools.get_page_count()
 
-    messages = [
-        {"role": "system", "content": build_system_prompt(n_pages)},
-        {"role": "user", "content": message},
-    ]
+    messages = [{"role": "system", "content": build_system_prompt(n_pages)}]
+    messages.extend(_sanitize_history(history))
+    messages.append({"role": "user", "content": message})
 
     yield {"type": "status", "text": "Agent bắt đầu xử lý..."}
 
