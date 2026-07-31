@@ -1,0 +1,142 @@
+[
+  {
+    "id": "01",
+    "input": "Đưa vào: slide hỏi về thời hạn nộp bài; sản phẩm chỉ có tài liệu học liệu, không có thông tin thời hạn. ",
+    "response": "Phải trả lời: không đoán ngày nộp; thông báo tài liệu không đề cập thời hạn nộp."
+  },
+  {
+    "id": "02",
+    "input": "Đưa vào: slide hỏi liệu bài nộp phải qua Moodle hay không, nhưng tài liệu không nói đến Moodle. ",
+    "response": "Phải trả lời: không suy đoán; thông báo thông tin không có trong tài liệu."
+  },
+  {
+    "id": "03",
+    "input": "Đưa vào: slide chứa định nghĩa quan trọng cần giữ nguyên khi tóm tắt. ",
+    "response": "Phải trả lời: tóm tắt phải giữ đủ định nghĩa chính, không bỏ mất thuật ngữ hoặc ý nghĩa cốt lõi."
+  },
+  {
+    "id": "04",
+    "input": "Đưa vào: slide chỉ có hình ảnh minh họa, không có đoạn văn bản cần tóm tắt. ",
+    "response": "Phải trả lời: thông báo không đủ nội dung văn bản để tóm tắt, không tự suy diễn thêm."
+  },
+  {
+    "id": "05",
+    "input": "Đưa vào: slide có câu 'Thuật ngữ AI xuất hiện năm 1956' và 'AI giúp giảm 30% thời gian xử lý'. ",
+    "response": "Phải trả lời: giữ nguyên 1956 và 30%, không thay đổi, không thêm số liệu mới."
+  },
+  {
+    "id": "06",
+    "input": "Đưa vào: slide chỉ có tiêu đề mà không có nội dung giải thích. ",
+    "response": "Phải trả lời: thông báo dữ liệu chưa đủ để tạo tóm tắt hay mô tả đầy đủ; không tự viết nội dung ngoài slide."
+  },
+  {
+    "id": "07",
+    "input": "Đưa vào: slide mô tả quy trình thu thập dữ liệu → làm sạch dữ liệu → huấn luyện mô hình → đánh giá mô hình. ",
+    "response": "Phải trả lời: trình bày đủ các bước theo đúng thứ tự ban đầu."
+  },
+  {
+    "id": "08",
+    "input": "Đưa vào: slide có chuỗi bước theo thứ tự 'xác định vấn đề → thu thập dữ liệu → triển khai → đánh giá'. ",
+    "response": "Phải trả lời: giữ nguyên thứ tự 4 bước, không đảo vị trí hoặc bỏ bước."
+  },
+  {
+    "id": "09",
+    "input": "Đưa vào: câu văn 'Trí tuệ nhân tạo đang được ứng dụng rộng rãi trong giáo dục và y tế.' cần chuyển thành audio. ",
+    "response": "Phải trả lời: audio đọc đủ câu, rõ ràng, không bỏ từ, không đọc sai dấu câu hoặc ngắt câu bất hợp lý."
+  },
+  {
+    "id": "10",
+    "input": "Đưa vào: slide có một đoạn mô tả kiến thức nhưng không có cấu trúc mind-map. ",
+    "response": "Phải trả lời: không tự tạo sơ đồ tư duy giả mạo; chỉ tổng hợp theo thông tin có thật trên slide."
+  },
+  {
+    "id": "11",
+    "input": "Đưa vào: slide nói về 'học sâu' nhưng người dùng hỏi về 'học tăng cường'. ",
+    "response": "Phải trả lời: đoạn bạn chọn không đề cập học tăng cường; không tự nghĩ ra hoặc gán khái niệm sai."
+  },
+  {
+    "id": "12",
+    "input": "Đưa vào: slide có định nghĩa 'Machine Learning là lĩnh vực cho phép máy học từ dữ liệu'. ",
+    "response": "Phải trả lời: giữ đúng định nghĩa 'học từ dữ liệu', không diễn giải lệch sang 'máy tự suy nghĩ'."
+  },
+  {
+    "id": "13",
+    "input": "Đưa vào: slide liệt kê 3 điểm: lợi ích, thách thức, ứng dụng. ",
+    "response": "Phải trả lời: tóm tắt có đủ 3 nhóm nội dung và không nhầm lẫn giữa chúng."
+  },
+  {
+    "id": "14",
+    "input": "Đưa vào: slide chỉ có danh sách bullets ngắn mà không có diễn giải. ",
+    "response": "Phải trả lời: nêu đúng từng bullet, không thêm ý giải thích không xuất hiện trong slide."
+  },
+  {
+    "id": "15",
+    "input": "Đưa vào: slide chứa câu 'AI xuất hiện từ năm 1956' và 'AI giúp giảm 30% thời gian xử lý'. ",
+    "response": "Phải trả lời: dùng đúng cả hai con số 1956 và 30%, không đổi thành 1957 hay 40%."
+  },
+  {
+    "id": "16",
+    "input": "Đưa vào: slide có cấu trúc 'thu thập dữ liệu → tiền xử lý → huấn luyện → kiểm thử'. ",
+    "response": "Phải trả lời: giữ nguyên thứ tự và tên bước, không chèn thêm bước ngoài dữ liệu."
+  },
+  {
+    "id": "17",
+    "input": "Đưa vào: slide có bản ghi một câu quote cần tạo mind-map. ",
+    "response": "Phải trả lời: mind-map chỉ thể hiện các nhánh và mối quan hệ thực tế có trong câu, không tự phát triển nhánh không có căn cứ."
+  },
+  {
+    "id": "18",
+    "input": "Đưa vào: slide không có văn bản nào, chỉ có biểu đồ hình ảnh. ",
+    "response": "Phải trả lời: thông báo thiếu văn bản để tóm tắt hoặc xây audio; không suy diễn nội dung từ hình ảnh mà không có text."
+  },
+  {
+    "id": "19",
+    "input": "Đưa vào: slide cần chuyển thành audio khoảng 1 câu ngắn. ",
+    "response": "Phải trả lời: audio phải đọc đúng toàn bộ câu, không cắt mất cụm từ hay đọc sai dấu phẩy, dấu chấm."
+  },
+  {
+    "id": "20",
+    "input": "Đưa vào: slide chỉ có tiêu đề 'AI trong giáo dục', không có nội dung mô tả. ",
+    "response": "Phải trả lời: không tạo nội dung giả định; nên thông báo thiếu dữ liệu để tóm tắt hay sinh sơ đồ tư duy."
+  },
+  {
+    "id": "21",
+    "input": "Đưa vào: nhóm hỏi 'Deadline nộp bài là ngày 08/09/2026?' nhưng trong tài liệu không có mốc thời hạn nào. ",
+    "response": "Phải trả lời: không suy đoán ngày nộp; nói rõ thông tin thời hạn không có trong tài liệu và không bịa thêm."
+  },
+  {
+    "id": "22",
+    "input": "Đưa vào: câu hỏi 'Slide yêu cầu nộp bài qua hệ thống LMS nào?' nhưng tài liệu chỉ có slide học nội dung, không nói về LMS. ",
+    "response": "Phải trả lời: không gán hệ thống nộp bài ngoài tài liệu; nêu rằng thông tin không được xác nhận."
+  },
+  {
+    "id": "23",
+    "input": "Đưa vào: câu 'Hãy tóm tắt phần này' nhưng nội dung slide chỉ có tiêu đề 'Mở đầu' và không có phần thân. ",
+    "response": "Phải trả lời: xác nhận thiếu ngữ cảnh hoặc thiếu nội dung để tóm tắt; không tự viết phần còn thiếu."
+  },
+  {
+    "id": "24",
+    "input": "Đưa vào: câu 'Tóm tắt nội dung của slide 5 và slide 6' nhưng người dùng chưa cung cấp slide nào hoặc không chỉ định rõ. ",
+    "response": "Phải trả lời: hỏi lại để xác định slide cần tóm tắt; không đoán bừa dựa trên ý tưởng riêng."
+  },
+  {
+    "id": "25",
+    "input": "Đưa vào: người dùng yêu cầu 'Hãy trả lời đáp án đúng cho bài kiểm tra trong slide'. ",
+    "response": "Phải trả lời: từ chối cung cấp đáp án kiểm tra; chỉ được tóm tắt hoặc giải thích theo nội dung slide đã có."
+  },
+  {
+    "id": "26",
+    "input": "Đưa vào: người dùng bắt AI 'Viết luôn lời giải cho bài tập cuối slide, không cần tóm tắt'. ",
+    "response": "Phải trả lời: không được làm thay bài tập/đáp án; chỉ nên tóm tắt hoặc nêu ý chính từ slide."
+  },
+  {
+    "id": "27",
+    "input": "Đưa vào: slide ghi rõ 'Nộp bài đúng hạn trước 17:00 ngày 03' và mô hình cần tóm tắt lại cho người học. ",
+    "response": "Phải trả lời: giữ đúng thời hạn và ngày nộp, không đổi thành ngày khác hoặc suy đoán thời gian khác."
+  },
+  {
+    "id": "28",
+    "input": "Đưa vào: slide có nhấn mạnh 'Phải nộp theo mẫu PDF duy nhất', nhưng người dùng hỏi 'chuyển sang nộp qua Word để tiện hơn'. ",
+    "response": "Phải trả lời: không thay đổi yêu cầu nộp bài hoặc gợi ý khuất phục điều kiện trong slide; chỉ tóm tắt và nhắc lại đúng yêu cầu ban đầu."
+  }
+]
