@@ -2,7 +2,7 @@ import pytest
 
 import tools
 
-PDF = "../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf"
+PDF = "../data/vlearn-pack/slides/d2-slide-hackathon.pdf"
 
 
 @pytest.fixture(autouse=True)
@@ -12,14 +12,14 @@ def loaded_document():
 
 # --- validate_mindmap ---
 
-GOOD_MAP = """# HCI Nhập môn
-## Khái niệm cơ bản
-### Định nghĩa HCI [Tr.3]
-### Lịch sử phát triển [Tr.5]
-## Nguyên tắc thiết kế
-### Lấy người dùng làm trung tâm [Tr.10]
-## Ứng dụng
-### Thiết kế giao diện [Tr.15]
+GOOD_MAP = """# Xác định bài toán AI
+- Mô hình Double Diamond ... [Tr.3].
+- Sai lầm thường gặp ... [Tr.7].
+- Chỉ số đo lường ... [Tr.12].
+- Ba mô hình cơ bản: Prompt Chaining, Routing, và Parallelization ... [Tr.20].
+- Cây quyết định ... [Tr.21].
+- Reward function ... [Tr.22].
+- 6 yếu tố bài toán cốt lõi ... 3 yếu tố quyết định ... [Tr.27].
 """
 
 

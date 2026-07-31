@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VLearn - HCI UX-UI 01</title>
+  <title>VLearn - Ngày 2: Bài toán cho AI</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -184,25 +184,36 @@
     .action-btn:hover:not(:disabled) { background: var(--blue-light); border-color: var(--blue-primary); color: var(--blue-primary); }
     .action-btn:disabled { opacity: .5; cursor: not-allowed; }
 
-    .trace-panel { padding: 6px 12px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); font-size: 10.5px; color: var(--gray-600); max-height: 110px; overflow-y: auto; flex-shrink: 0; }
+    /* Mỗi lượt hỏi tạo một .turn-block riêng, chèn vào #chatMessages ngay
+       dưới bong bóng câu hỏi — thay vì 1 trace-panel/output-panel dùng
+       chung cho cả cuộc hội thoại (lượt sau ghi đè lượt trước). */
+    .turn-block { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+
+    .trace-panel { padding: 6px 8px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; font-size: 10.5px; color: var(--gray-600); max-height: 110px; overflow-y: auto; }
     .trace-panel:empty { display: none; }
     .trace-line { padding: 1px 0; display: flex; gap: 5px; }
     .trace-line .tick { color: var(--green); }
 
-    .output-panel { display: none; flex-direction: column; border-bottom: 1px solid var(--gray-200); flex-shrink: 0; background: var(--white); }
+    .output-panel { display: none; flex-direction: column; border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; background: var(--white); }
     .output-panel.open { display: flex; }
-    .output-panel.expanded { position: fixed; inset: 0; z-index: 500; border: none; }
-    .tab-bar { display: flex; gap: 2px; padding: 6px 8px 0; border-bottom: 1px solid var(--gray-200); align-items: center; }
+    .output-panel.expanded { position: fixed; inset: 0; z-index: 500; border: none; border-radius: 0; }
+    .tab-bar { display: flex; gap: 2px; padding: 6px 8px 0; border-bottom: 1px solid var(--gray-200); align-items: center; flex-shrink: 0; }
     .tab { height: 26px; padding: 0 8px; border: none; background: transparent; border-radius: 6px 6px 0 0; font-size: 11.5px; font-family: 'Inter', sans-serif; color: var(--gray-500); cursor: pointer; }
     .tab.active { background: var(--blue-light); color: var(--blue-primary); font-weight: 600; }
     .tab-spacer { margin-left: auto; }
-    .tab-content { display: none; padding: 10px 12px; overflow: auto; height: 320px; font-size: 12px; line-height: 1.55; }
+    .tab-content { display: none; padding: 10px 12px; overflow: auto; height: 280px; font-size: 12px; line-height: 1.55; }
     .output-panel.expanded .tab-content { height: calc(100vh - 40px); }
     .tab-content.active { display: block; }
     .tab-content h1, .tab-content h2, .tab-content h3 { font-size: 13px; margin: 8px 0 4px; }
     .tab-content ul { padding-left: 18px; }
     .tab-content code { background: var(--gray-100); padding: 1px 4px; border-radius: 3px; }
-    #mindmapSvg { width: 100%; height: 100%; }
+
+    /* markmap tự xử lý pan (kéo) / zoom (cuộn chuột) bên trong SVG của nó —
+       container phải overflow:hidden với kích thước cố định, nếu không
+       scrollbar của .tab-content sẽ giành mất sự kiện cuộn chuột. */
+    .tab-content[data-tab-content="mindmap"] { padding: 0; overflow: hidden; position: relative; }
+    .tab-content[data-tab-content="mindmap"] .issue-banner { margin: 8px 8px 0; }
+    .markmap, .markmap > svg { width: 100%; height: 100%; display: block; }
     .issue-banner { background: #fef3c7; border: 1px solid #fbbf24; color: #92400e; padding: 6px 8px; border-radius: 6px; font-size: 11px; margin-bottom: 8px; }
     .audio-script { margin-top: 10px; font-size: 11.5px; color: var(--gray-600); white-space: pre-wrap; }
     .error-box { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 8px 10px; border-radius: 6px; font-size: 11.5px; }
@@ -223,8 +234,8 @@
   <div class="file-section">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e53935" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     <div class="file-info">
-      <div class="file-name">HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf</div>
-      <div class="file-path">K4-hackathon-I-m-back-E402 · HCI Course Materials</div>
+      <div class="file-name">Ngày 2: Xác định bài toán cho AI</div>
+      <div class="file-path">Co-hort 4 · Ngày 2: Xác định bài toán cho AI</div>
     </div>
   </div>
   <div class="topbar-right">
@@ -286,7 +297,7 @@
       </div>
     </div>
     <div class="pdf-viewer">
-      <iframe class="pdf-frame" src="HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf" title="HCI UX-UI 01"></iframe>
+      <iframe class="pdf-frame" src="data\vlearn-pack\slides\d2-slide-hackathon.pdf" title="Xác định bài toán AI"></iframe>
     </div>
   </div>
 
@@ -303,7 +314,7 @@
       </div>
       <div class="chat-header-info">
         <div class="chat-title">VLearn Tutor</div>
-        <div class="chat-subtitle"><span class="pulse-dot"></span> Tra ly hoc theo ngu canh</div>
+        <div class="chat-subtitle"><span class="pulse-dot"></span> Trợ lý học theo ngữ cảnh</div>
       </div>
       <div class="chat-header-actions">
         <button class="chat-hdr-btn">
@@ -315,36 +326,18 @@
         <span class="slide-ref">Trang slide: 1</span>
       </div>
     </div>
-    <div class="context-bar">Ngu canh: <span>Slide trang 1</span></div>
+    <div class="context-bar">Ngữ cảnh: <span>Slide trang 1</span></div>
     <div class="action-buttons">
       <button class="action-btn" id="btnSummary" onclick="runAction('summary')">📝 Tóm tắt</button>
       <button class="action-btn" id="btnMindmap" onclick="runAction('mindmap')">🧠 Mind Map</button>
       <button class="action-btn" id="btnAudio" onclick="runAction('audio')">🎧 Audio</button>
     </div>
-    <div class="trace-panel" id="tracePanel"></div>
-    <div class="output-panel" id="outputPanel">
-      <div class="tab-bar">
-        <button class="tab active" data-tab="summary" onclick="showTab('summary')">📝 Tóm tắt</button>
-        <button class="tab" data-tab="mindmap" onclick="showTab('mindmap')">🧠 Mind Map</button>
-        <button class="tab" data-tab="audio" onclick="showTab('audio')">🎧 Audio</button>
-        <span class="tab-spacer"></span>
-        <button class="tab" onclick="toggleExpand()" title="Phóng to / thu nhỏ">⛶</button>
-      </div>
-      <div class="tab-content active" id="tab-summary"></div>
-      <div class="tab-content" id="tab-mindmap">
-        <svg id="mindmapSvg"></svg>
-      </div>
-      <div class="tab-content" id="tab-audio">
-        <audio id="audioPlayer" controls style="width:100%"></audio>
-        <div class="audio-script" id="audioScript"></div>
-      </div>
-    </div>
     <div class="chat-messages" id="chatMessages">
       <div>
         <div class="msg-bubble msg-bot">
-          Xin chao! Minh la VLearn Tutor. Ban co the boi den mot doan tren slide de hoi hoac gui cau hoi tu do nhe!
+          Xin chào! Mình là VLearn Tutor. Bạn có thể bôi đen một đoạn trên slide để hỏi hoặc gửi câu hỏi tự do nhé!
         </div>
-        <div class="msg-time">VLearn Tutor · vua xong</div>
+        <div class="msg-time">VLearn Tutor · vừa xong</div>
       </div>
     </div>
     <div class="chat-page-nav">
@@ -408,29 +401,68 @@
     });
   }
 
-  function showTab(name) {
-    document.querySelectorAll('.tab[data-tab]').forEach(t => {
+  function scrollChatToBottom() {
+    const c = document.getElementById('chatMessages');
+    c.scrollTop = c.scrollHeight;
+  }
+
+  // Mỗi lượt hỏi (nút shortcut hoặc gõ chat) tạo MỘT turn-block mới, chèn
+  // ngay dưới bong bóng câu hỏi. Trace + tab kết quả của lượt này sống bên
+  // trong block đó — không còn ID toàn cục nên lượt sau không đè lượt trước.
+  function createTurn() {
+    const wrap = document.createElement('div');
+    wrap.className = 'turn-block';
+    wrap.innerHTML = `
+      <div class="trace-panel" data-role="trace"></div>
+      <div class="output-panel" data-role="output">
+        <div class="tab-bar">
+          
+          <span class="tab-spacer"></span>
+          <button class="tab" onclick="toggleExpand(this)" title="Phóng to / thu nhỏ">⛶</button>
+        </div>
+        <div class="tab-content active" data-tab-content="summary"></div>
+        <div class="tab-content" data-tab-content="mindmap"></div>
+        <div class="tab-content" data-tab-content="audio">
+          <audio controls style="width:100%"></audio>
+          <div class="audio-script"></div>
+        </div>
+      </div>`;
+    document.getElementById('chatMessages').appendChild(wrap);
+    scrollChatToBottom();
+    return wrap;
+  }
+
+  // btnOrPanel: nút tab (dùng closest) hoặc thẳng .output-panel — cho phép
+  // gọi từ onclick lẫn từ renderArtifact() bằng cùng một hàm.
+  function showTab(btnOrPanel, name) {
+    const panel = btnOrPanel.classList.contains('output-panel')
+      ? btnOrPanel : btnOrPanel.closest('.output-panel');
+    panel.querySelectorAll('.tab[data-tab]').forEach(t => {
       t.classList.toggle('active', t.dataset.tab === name);
     });
-    document.querySelectorAll('.tab-content').forEach(c => {
-      c.classList.toggle('active', c.id === 'tab-' + name);
+    panel.querySelectorAll('.tab-content').forEach(c => {
+      c.classList.toggle('active', c.dataset.tabContent === name);
     });
-    document.getElementById('outputPanel').classList.add('open');
+    panel.classList.add('open');
   }
 
-  function toggleExpand() {
-    document.getElementById('outputPanel').classList.toggle('expanded');
+  function toggleExpand(btn) {
+    btn.closest('.output-panel').classList.toggle('expanded');
+    // markmap đo lại kích thước container qua ResizeObserver; đôi khi
+    // không tự bắt kịp đổi CSS height tức thời khi bật/tắt fullscreen,
+    // nên chủ động bắn thêm 1 sự kiện resize để nó refit.
+    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
   }
 
-  function addTrace(text, done) {
-    const panel = document.getElementById('tracePanel');
+  function addTrace(turn, text, done) {
+    const panel = turn.querySelector('[data-role="trace"]');
     const line = document.createElement('div');
     line.className = 'trace-line';
     line.innerHTML = (done ? '<span class="tick">✓</span>' : '<span>⋯</span>')
                    + '<span>' + text.replace(/</g, '&lt;') + '</span>';
     panel.appendChild(line);
     panel.scrollTop = panel.scrollHeight;
-    return line;
+    scrollChatToBottom();
   }
 
   function addBubble(html, who) {
@@ -439,23 +471,30 @@
     if (who === 'user') {
       wrap.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
       wrap.innerHTML = '<div class="msg-bubble msg-user">' + html + '</div>'
-                     + '<div class="msg-time right">Ban · vua xong</div>';
+                     + '<div class="msg-time right">Ban · vừa xong</div>';
     } else {
       wrap.innerHTML = '<div class="msg-bubble msg-bot">' + html + '</div>'
-                     + '<div class="msg-time">VLearn Tutor · vua xong</div>';
+                     + '<div class="msg-time">VLearn Tutor · vừa xong</div>';
     }
     c.appendChild(wrap);
-    c.scrollTop = c.scrollHeight;
+    scrollChatToBottom();
     return wrap;
   }
 
-  function renderArtifact(ev) {
+  function renderArtifact(turn, ev) {
+    const panel = turn.querySelector('[data-role="output"]');
+
     if (ev.kind === 'summary') {
-      document.getElementById('tab-summary').innerHTML = marked.parse(ev.content);
-      showTab('summary');
+      showTab(panel, 'summary');
+      panel.querySelector('[data-tab-content="summary"]').innerHTML = marked.parse(ev.content);
 
     } else if (ev.kind === 'mindmap') {
-      const box = document.getElementById('tab-mindmap');
+      // Hiện tab TRƯỚC khi render: markmap-autoloader đo kích thước container
+      // ngay lúc gọi renderAll(). Nếu tab-content vẫn display:none (chưa active)
+      // lúc đó, nó đo ra 0×0 và mind map bị kẹt trong một khung tí hon vĩnh viễn
+      // kể cả sau khi tab được active — đây chính là lỗi "khung rất nhỏ".
+      showTab(panel, 'mindmap');
+      const box = panel.querySelector('[data-tab-content="mindmap"]');
       const warning = (ev.issues && ev.issues.length)
         ? '<div class="issue-banner">⚠ ' + ev.issues.join('<br>⚠ ') + '</div>'
         : '';
@@ -463,7 +502,7 @@
       // Nếu markmap (CDN) hỏng hoặc không render được, vẫn phải thấy nội dung.
       // Outline markdown thô đọc được bằng mắt — degrade gracefully thay vì
       // để trống màn hình giữa lúc demo.
-      const fallback = '<pre style="white-space:pre-wrap;font-size:11.5px">'
+      const fallback = '<pre style="white-space:pre-wrap;font-size:11.5px;padding:10px 12px">'
                      + ev.content.replace(/</g, '&lt;') + '</pre>';
 
       try {
@@ -474,31 +513,32 @@
         box.innerHTML = warning + '<div class="markmap"><script type="text/template">'
                       + ev.content + '<\/script></div>';
         window.markmap.autoLoader.renderAll();
+        requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
       } catch (err) {
         console.warn('markmap hỏng, dùng outline thô:', err);
         box.innerHTML = warning + fallback;
       }
-      showTab('mindmap');
 
     } else if (ev.kind === 'audio') {
-      document.getElementById('audioPlayer').src = API_BASE + ev.url;
-      document.getElementById('audioScript').textContent = ev.script || '';
-      showTab('audio');
+      showTab(panel, 'audio');
+      panel.querySelector('audio').src = API_BASE + ev.url;
+      panel.querySelector('.audio-script').textContent = ev.script || '';
     }
+    scrollChatToBottom();
   }
 
-  function handleEvent(ev) {
+  function handleEvent(turn, ev) {
     if (ev.type === 'status') {
-      addTrace(ev.text, false);
+      addTrace(turn, ev.text, false);
 
     } else if (ev.type === 'tool_call') {
-      addTrace(ev.name + '(' + JSON.stringify(ev.args).slice(0, 60) + ')', false);
+      addTrace(turn, ev.name + '(' + JSON.stringify(ev.args).slice(0, 60) + ')', false);
 
     } else if (ev.type === 'tool_result') {
-      addTrace(ev.summary, true);
+      addTrace(turn, ev.summary, true);
 
     } else if (ev.type === 'artifact') {
-      renderArtifact(ev);
+      renderArtifact(turn, ev);
 
     } else if (ev.type === 'message') {
       addBubble(marked.parse(ev.content || ''), 'bot');
@@ -515,7 +555,7 @@
   async function askAgent(message) {
     if (busy) return;
     setBusy(true);
-    document.getElementById('tracePanel').innerHTML = '';
+    const turn = createTurn();
 
     let res;
     try {
@@ -557,7 +597,7 @@
         for (const part of parts) {
           if (!part.startsWith('data: ')) continue;
           try {
-            handleEvent(JSON.parse(part.slice(6)));
+            handleEvent(turn, JSON.parse(part.slice(6)));
           } catch (err) {
             console.error('Event hỏng:', part, err);
           }

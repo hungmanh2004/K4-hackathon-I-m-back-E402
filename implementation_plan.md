@@ -19,7 +19,7 @@
 > **Scope giới hạn:** Plan này build **prototype demo** gói gọn trong project hiện tại — KHÔNG deploy, KHÔNG database, KHÔNG authentication. Chỉ cần chạy `python server.py` + mở `vlearn_clone.html` là demo được.
 
 > [!WARNING]
-> **File PDF:** Plan sử dụng file `HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf` (5.6MB) đã có trong project. Đây là PDF slide nên pymupdf trích text được tốt. Nếu PDF là scan (ảnh), sẽ cần OCR — nhưng file này không phải scan.
+> **File PDF:** Plan sử dụng file `../data/vlearn-pack/slides/d2-slide-hackathon.pdf` (5.6MB) đã có trong project. Đây là PDF slide nên pymupdf trích text được tốt. Nếu PDF là scan (ảnh), sẽ cần OCR — nhưng file này không phải scan.
 
 ## Open Questions
 

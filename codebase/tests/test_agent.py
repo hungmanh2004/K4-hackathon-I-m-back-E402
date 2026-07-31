@@ -6,7 +6,7 @@ import pytest
 import agent
 import tools
 
-PDF = "../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf"
+PDF = "../data/vlearn-pack/slides/d2-slide-hackathon.pdf"
 
 
 @pytest.fixture(autouse=True)

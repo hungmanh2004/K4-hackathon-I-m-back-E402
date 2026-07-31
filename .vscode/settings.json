@@ -1,0 +1,12 @@
+{
+  "liveServer.settings.ignoreFiles": [
+    ".vscode/**",
+    "**/*.scss",
+    "**/*.map",
+    "codebase/**",
+    "eval/**",
+    "data/**",
+    ".git/**"
+  ],
+  "livePreview.autoRefreshPreview": "Never"
+}
