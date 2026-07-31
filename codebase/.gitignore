@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 audio_output/**/*.mp3
 .pytest_cache/
+docs/
+.claude/
