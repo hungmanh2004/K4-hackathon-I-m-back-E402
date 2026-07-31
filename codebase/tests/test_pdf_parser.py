@@ -2,7 +2,7 @@ import pytest
 
 from pdf_parser import extract_pages, page_count
 
-PDF = "../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf"
+PDF = "../data/vlearn-pack/slides/d2-slide-hackathon.pdf"
 
 
 def test_page_count_is_positive():

@@ -31,7 +31,7 @@ load_dotenv(ROOT / "codebase" / ".env")
 import agent      # noqa: E402
 import tools      # noqa: E402
 
-PDF_PATH = str(ROOT / "HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf")
+PDF_PATH = str(ROOT / "../data/vlearn-pack/slides/d2-slide-hackathon.pdf")
 GOLDEN_SET = Path(__file__).parent / "golden_set.json"
 
 _PAGE_REF = re.compile(r"\[Tr\.(\d+)\]")

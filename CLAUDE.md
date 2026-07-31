@@ -52,7 +52,7 @@ Status: **built**. The original `implementation_plan.md` (per-endpoint sketch) w
   - Config via **two** required env vars: `OPENAI_API_KEY` and `ELEVENLABS_API_KEY` (`.env`, not committed — see `codebase/.env.example`). The server's startup hook refuses to boot if either is missing.
 - **Frontend**: `vlearn_clone.html` — upgraded from the original hardcoded/fake `sendMessage()` mock into a real SSE client that streams `POST /api/agent` from `http://localhost:8000`, renders a live tool-call trace, and populates 3 output tabs (Summary / Mind Map / Audio) — mind maps via the `markmap-autoloader` CDN script, summaries and chat replies via `marked.js`.
 - No database, no auth, no deployment — this is a local-only demo prototype (`python`/`uvicorn` + open the HTML file in a browser).
-- Demo PDF used for the whole flow: `HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf` (already in repo root), referenced from `codebase/` as `../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf`.
+- Demo PDF used for the whole flow: `data\vlearn-pack\slides\d2-slide-hackathon.pdf` (already in repo root), referenced from `codebase/` as `../data/vlearn-pack/slides/d2-slide-hackathon.pdf`.
 
 ## Commands
 
@@ -68,7 +68,7 @@ Frontend: open `vlearn_clone.html` directly in a browser (no build step).
 Manual smoke test of a module (pattern used throughout the as-executed plan):
 ```bash
 cd codebase
-python -c "from pdf_parser import extract_pages; print(extract_pages('../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf')[0])"
+python -c "from pdf_parser import extract_pages; print(extract_pages('../data/vlearn-pack/slides/d2-slide-hackathon.pdf')[0])"
 ```
 
 Test suite (pytest, from `codebase/`):
