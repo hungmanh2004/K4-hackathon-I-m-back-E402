@@ -17,7 +17,7 @@ load_dotenv()
 
 # Câu test có dấu đầy đủ, có số, có thuật ngữ tiếng Anh xen kẽ —
 # đúng kiểu câu sẽ xuất hiện trong podcast thật.
-SAMPLE = "Xin chào, đây là bản tóm tắt bài giảng HCI, phần giao diện người dùng, trang 12."
+SAMPLE = "Xin chào, đây là bản tóm tắt bài giảng day 2, phần giao diện người dùng, trang 12."
 
 OUT_DIR = Path(__file__).parent.parent / "audio_output" / "voice_test"
 

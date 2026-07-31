@@ -19,7 +19,7 @@ import tts
 
 load_dotenv()
 
-PDF_PATH = "../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf"
+PDF_PATH = "../data/vlearn-pack/slides/d2-slide-hackathon.pdf"
 
 app = FastAPI(title="VLearn AI Study Agent")
 
