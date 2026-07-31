@@ -7,3 +7,5 @@ docs/
 .venv/
 venv/
 *.pyc
+CLAUDE.md
+implementation_plan.md

@@ -31,8 +31,9 @@ load_dotenv(ROOT / "codebase" / ".env")
 import agent      # noqa: E402
 import tools      # noqa: E402
 
-PDF_PATH = str(ROOT / "../data/vlearn-pack/slides/d2-slide-hackathon.pdf")
+PDF_PATH = str(ROOT / "data/vlearn-pack/slides/d2-slide-hackathon.pdf")
 GOLDEN_SET = Path(__file__).parent / "golden_set.json"
+EVAL_TEST = Path(__file__).parent / "eval_test.json"
 
 _PAGE_REF = re.compile(r"\[Tr\.(\d+)\]")
 
@@ -136,7 +137,7 @@ CHECKS = {
 
 def main() -> None:
     tools.load_document(PDF_PATH)
-    cases = json.loads(GOLDEN_SET.read_text(encoding="utf-8"))
+    cases = json.loads(EVAL_TEST.read_text(encoding="utf-8"))
 
     rows, total, passed_total = [], 0, 0
 
