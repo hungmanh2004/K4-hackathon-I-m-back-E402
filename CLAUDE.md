@@ -40,37 +40,41 @@ reflection/          ← one file per member
 - `chatlog/chat_history_anonymized_for_hackathon.csv` — see `data/vlearn-pack/chatlog/DATA_DICTIONARY.md` before mining it (field meanings, known-broken columns like `total_cost_usd` which is always 0, `misconceptions`/`follow_ups` which are always empty).
 - Full rules: `README.md` §"Bảo mật dữ liệu được cung cấp" and `data/vlearn-pack/README.md`.
 
-## Architecture (per `implementation_plan.md`)
+## Architecture (per `docs/superpowers/plans/2026-07-30-vlearn-ai-study-agent.md`)
 
-Status: **not yet built** — only `codebase/requirements.txt` exists so far. The plan below is the target architecture.
+Status: **built**. The original `implementation_plan.md` (per-endpoint sketch) was superseded during build by `docs/superpowers/plans/2026-07-30-vlearn-ai-study-agent.md`, which is what actually shipped — read that plan, not `implementation_plan.md`, for design rationale.
 
-- **Backend** (Python, in `codebase/`): FastAPI app (`server.py`) exposing `/api/extract-text`, `/api/summarize`, `/api/mindmap`, `/api/audio`, `/api/chat`, plus `/health` and a static `/audio/{filename}` file route. Backing modules:
-  - `pdf_parser.py` — text extraction via `pymupdf` (`extract_all_text`, `extract_text_by_page`, `get_page_count`).
-  - `ai_agent.py` — all OpenAI chat-completion calls (`summarize`, `to_mindmap`, `to_audio_script`, `chat_with_context`), model `gpt-4o-mini`, Vietnamese-language prompts/output.
-  - `tts_engine.py` — OpenAI TTS (`tts-1`, voice `nova` by default) → MP3 files under `codebase/audio_output/`.
-  - Config via `OPENAI_API_KEY` env var (`.env`, not committed — see `codebase/.env.example`).
-- **Frontend**: `vlearn_clone.html` — a single static HTML/CSS/JS file (currently a UI mock with hardcoded/fake chat behavior in `sendMessage()`). The plan upgrades it to call the FastAPI backend via `fetch()` at `http://localhost:8000`, add a tabbed output panel (Summary / Mind Map / Audio), and render mind maps client-side via the `markmap-autoloader` CDN script and summaries via `marked.js`.
+- **Backend** (Python, in `codebase/`): FastAPI app (`server.py`) exposing exactly **one** working feature endpoint, `POST /api/agent` (body `{"message": str}`, streams Server-Sent Events), plus `GET /health` and a static `GET /audio/{filename}` file route. There is no `/api/extract-text`, `/api/summarize`, `/api/mindmap`, `/api/audio`, or `/api/chat` — summary/mind-map/audio are tools the agent calls internally over the one SSE endpoint, not separate REST routes. Backing modules:
+  - `pdf_parser.py` — pure text extraction via `pymupdf` (`extract_pages(pdf_path) -> list[dict]`, `page_count(pdf_path) -> int`). No AI, no network.
+  - `tools.py` — the agent's five tool implementations (`list_pages`, `read_pages`, `emit_summary`, `emit_mindmap`, `render_audio`) plus `TOOL_SCHEMAS`, `load_document`, `get_page_count`, `validate_mindmap`, `execute_tool`. Tools are pure data plumbing — no LLM calls inside them.
+  - `agent.py` — the one place that calls the LLM: a tool-calling loop (`run_stream`, `run`, `build_system_prompt`) using model `gpt-4o-mini`, `MAX_ITERATIONS = 8`, Vietnamese-language system prompt.
+  - `tts.py` — TTS via **ElevenLabs** (`eleven_turbo_v2_5`, NOT `eleven_multilingual_v2` — Vietnamese isn't supported by that model), voice chosen and pinned to `ELEVENLABS_VOICE_ID` during Task 1's voice spike. Content-hash cache keyed off the script text → MP3 files under `codebase/audio_output/`.
+  - Config via **two** required env vars: `OPENAI_API_KEY` and `ELEVENLABS_API_KEY` (`.env`, not committed — see `codebase/.env.example`). The server's startup hook refuses to boot if either is missing.
+- **Frontend**: `vlearn_clone.html` — upgraded from the original hardcoded/fake `sendMessage()` mock into a real SSE client that streams `POST /api/agent` from `http://localhost:8000`, renders a live tool-call trace, and populates 3 output tabs (Summary / Mind Map / Audio) — mind maps via the `markmap-autoloader` CDN script, summaries and chat replies via `marked.js`.
 - No database, no auth, no deployment — this is a local-only demo prototype (`python`/`uvicorn` + open the HTML file in a browser).
-- Demo PDF used for the summarize/mindmap/audio flow: `HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf` (already in repo root).
+- Demo PDF used for the whole flow: `HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf` (already in repo root), referenced from `codebase/` as `../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf`.
 
 ## Commands
 
-Backend (from `codebase/`, once implemented):
+Backend (from `codebase/`):
 ```bash
 pip install -r requirements.txt
-cp .env.example .env        # then fill in OPENAI_API_KEY
+cp .env.example .env        # then fill in OPENAI_API_KEY and ELEVENLABS_API_KEY
 uvicorn server:app --reload --port 8000
 ```
 
 Frontend: open `vlearn_clone.html` directly in a browser (no build step).
 
-Manual smoke test of a module (pattern used throughout `implementation_plan.md`):
+Manual smoke test of a module (pattern used throughout the as-executed plan):
 ```bash
 cd codebase
-python -c "from pdf_parser import extract_all_text; print(extract_all_text('../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf')[:200])"
+python -c "from pdf_parser import extract_pages; print(extract_pages('../HCI - UX-UI 01 HCI Intro Ver 1.1 .pdf')[0])"
 ```
 
-There is no test runner, linter, or CI configured in this repo yet.
+Test suite (pytest, from `codebase/`):
+```bash
+pytest -v
+```
 
 ## Working conventions specific to this repo
 

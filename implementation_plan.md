@@ -1,3 +1,5 @@
+> **Superseded.** This early sketch predates the actual build and diverged from it (endpoints, module names, and the TTS provider all changed). What was actually built is documented in [`docs/superpowers/plans/2026-07-30-vlearn-ai-study-agent.md`](docs/superpowers/plans/2026-07-30-vlearn-ai-study-agent.md) — read that instead. This file is kept for historical reference only.
+
 # VLearn AI Study Agent — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
