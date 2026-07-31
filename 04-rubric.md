@@ -55,7 +55,7 @@
 |---|---|
 | Golden set ≥20 case nhóm tự xây: ≥2 case/lớp chỗ khó + 8-10 case thường + 2-4 case hiếm; ≥10 case từ chatlog thật | 4 |
 | Mỗi chiều chất lượng có định nghĩa kiểm chứng được (người ngoài nhóm chấm ra cùng kết quả) | 4 |
-| Quality bar bằng con số, nằm trong spec.md commit trước 23:59 ngày 1, giữ nguyên sau đó | 3 |
+| Quality bar bằng con số, nằm trong spec.md commit trước hạn chốt spec của khoá (K3: 23:59 ngày 1 · K4: 12:00 ngày 2), giữ nguyên sau đó | 3 |
 | Bảng kết quả chạy trọn bộ ≥1 lượt, đủ mọi case kể cả case chưa đạt, có %, đối chiếu quality bar; chưa đạt thì có phân tích nguyên nhân | 4 |
 
 ### R5 · Prototype — 8
@@ -93,6 +93,6 @@ Checkpoint để giữ nhịp và cứu nhóm kẹt; artifact mỗi mốc là đ
 | **CP1 · Canvas** | 10:00 N1 | 15:00 N1 | Canvas 7 dòng (guide §1.5): hướng · job executor · pain 1 câu · 1-2 bằng chứng đầu · lát cắt 1 câu · automation + willing users dự kiến · phân công | ☐ lát cắt đúng format 1 câu ☐ có evidence ban đầu ☐ đủ tên phân công |
 | **CP2 · Bấm được** *(mốc hỗ trợ kỹ thuật — nhóm kẹt kỹ thuật gọi TA tại đây)* | 12:00 N1 | 17:00 N1 | Prototype Sketch/Mock: flow chính bấm đi hết được + commit đầu | ☐ flow chính bấm hết được ☐ repo có commit |
 | **CP3 · AI thật + đo lượt đầu** | 16:00 N1 | 10:30 N2 | Lời gọi AI thật ở quyết định trung tâm + golden set ≥20 + bảng kết quả lượt 1 có % | ☐ lời gọi AI thật, không hardcode ☐ golden set đủ case khó ☐ bảng đủ mọi case (kết quả thấp không ảnh hưởng — cần ghi nhận đầy đủ, trung thực) |
-| **CP4 · Chốt tiến độ** | 17:30 N1 | 12:00 N2 | Spec gần cuối + việc còn thiếu. **Hạn cứng: spec.md commit 23:59 N1, quality bar chốt từ thời điểm này** | ☐ evidence chuẩn A/B có log ☐ bảng impact + ứng viên đã loại ☐ 4 lớp cụ thể ☐ ≥4 nguyên tắc có vị trí áp dụng ☐ quality bar bằng số |
+| **CP4 · Chốt tiến độ** | 17:30 N1 | 12:00 N2 | Spec gần cuối + việc còn thiếu. **Hạn chốt spec: K3 — 23:59 ngày 1 · K4 — 12:00 ngày 2 (tại CP4); quality bar chốt từ thời điểm này** | ☐ evidence chuẩn A/B có log ☐ bảng impact + ứng viên đã loại ☐ 4 lớp cụ thể ☐ ≥4 nguyên tắc có vị trí áp dụng ☐ quality bar bằng số |
 | **CP5 · Xác minh + validation + dry run** | 09:00 N2 | 14:00 N2 | Feedback log ≥5 mẩu có tên + changelog + slide final + dry run xong | ☐ log đủ ≥5 có tên ☐ 1 thành viên ngẫu nhiên giải thích được phần có tên mình ☐ dry run xong |
 | **CP6 · Demo** | 10:00 N2 | 15:00 N2 | 5' trình bày (slide 6 trang, có case lỗi live + % vs bar) + 5' Q&A: thẻ giám khảo chạy 1 case lạ tại chỗ; mỗi thành viên nói ≥1 phần | — (vòng demo theo thể lệ sự kiện) |

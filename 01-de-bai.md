@@ -45,4 +45,4 @@ Chatlog VLearn tutor × học viên đã ẩn danh + **6 transcript bài giảng
 | 4 | Lát cắt prototype được | Một câu theo đúng format trên, demo được trong 5 phút, build được trong thời gian sự kiện |
 | 5 | User sẵn sàng thử | ≥3 người thật ngoài nhóm (tên cụ thể) đồng ý thử prototype trước demo |
 
-*Canvas nháp nộp tại CP1; evidence và spec hoàn thiện dần, chốt tại spec.md 23:59 N1.*
+*Canvas nháp nộp tại CP1; evidence và spec hoàn thiện dần, chốt tại hạn chốt spec của khoá mình (K3: 23:59 ngày 1 · K4: 12:00 ngày 2).*

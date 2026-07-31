@@ -5,7 +5,7 @@
 | Giai đoạn | Mốc tương ứng | Mục |
 |---|---|---|
 | 1 · Khám phá | Phát đề → CP1 Canvas | §1 |
-| 2 · Thiết kế & Spec | CP1 → CP4 + spec.md 23:59 N1 | §2 |
+| 2 · Thiết kế & Spec | CP1 → CP4 (hạn chốt spec) | §2 |
 | 3 · Build | CP2 → CP3 | §3 |
 | 4 · Đo & Validate | CP3 → CP5 | §4 |
 | 5 · Demo & Nộp | CP5 → CP6 | §5 |
@@ -35,7 +35,7 @@
 3. **Ghi phương pháp đếm** (đếm gì, trên bao nhiêu mẫu, quy tắc xếp loại) — người khác kiểm lại được mới tính. Giữ ≥5 ví dụ nguyên văn.
 4. Khảo sát/phỏng vấn: hỏi về **lần gần nhất** ("lần gần nhất bạn muốn xem lại một đoạn bài giảng, bạn làm gì? mất bao lâu?") — tránh hỏi ý kiến kiểu "bạn có cần tính năng X không?" — hầu như ai cũng trả lời có, dữ liệu thu được không dùng được. **Ghi log toàn bộ: câu đã hỏi, từng câu trả lời nguyên văn, và ai trả lời.** Không có log thì không được tính là bằng chứng.
 
-**Chuẩn bằng chứng** (tiêu chí nghiệm thu 2 — hoàn thiện đến 23:59, CP1 chỉ cần mầm):
+**Chuẩn bằng chứng** (tiêu chí nghiệm thu 2 — hoàn thiện đến hạn chốt spec, CP1 chỉ cần mầm):
 - **Đường A — khảo sát:** ≥20 người ngoài nhóm · ≥50% xác nhận · log đầy đủ.
 - **Đường B — mining:** số đếm được + ≥5 ví dụ nguyên văn + phương pháp đếm.
 - Khuyến khích cả hai: B chứng minh pain *tồn tại*, A chứng minh user *muốn nó được giải*.
@@ -51,7 +51,7 @@ Hướng (A/B/C) · job executor · pain một câu (ai-đang làm gì-vướng 
 
 ---
 
-# §2 · THIẾT KẾ & SPEC *(CP1 → CP4 · spec.md chốt 23:59 N1)*
+# §2 · THIẾT KẾ & SPEC *(CP1 → CP4 · spec.md chốt tại hạn chốt spec của khoá: K3 23:59 ngày 1 · K4 12:00 ngày 2)*
 
 ## 2.1 Các câu hỏi phải tự trả lời
 
@@ -108,11 +108,11 @@ Chạy **HAX Playbook** (github.com/microsoft/HAXPlaybook — trả lời bộ c
 2. **Đặt tên cho lỗi.** Gom output tệ thành nhóm lỗi có tên (bịa nguồn / lạc trình độ / cite sai trang / đoán khi thiếu thông tin / vượt thẩm quyền...), đối chiếu 4 lớp để không sót. Mỗi lỗi: trigger → biểu hiện → hậu quả. *(HAX Playbook; Aman Khan — "Beyond vibe checks", Lenny's Newsletter.)*
 3. **Biến mỗi chiều chất lượng thành định nghĩa kiểm chứng được.** "Trả lời tốt" không đo được. Tách chiều (đúng-có-căn-cứ / đúng cỡ-đúng giọng / an toàn), mỗi chiều: pass/fail ("mọi thông tin trace được về transcript") hoặc thang có mô tả mức (1 = sai kiến thức; 3 = đúng nhưng dài gấp đôi cần; 5 = đúng, đúng cỡ, có trích dẫn). *(HAX G2.)*
 4. **Test độ rõ bằng người thứ hai.** Hai thành viên chấm độc lập cùng 5 output → so. Lệch = định nghĩa mơ hồ → viết lại. Trong nhóm còn chấm khác nhau thì không dùng chấm được ai.
-5. **Golden set ≥20 case nhóm tự xây**: ≥2 case cho mỗi lớp chỗ khó + 8-10 case thường + 2-4 case hiếm; trong đó **≥10 case lấy hoặc phát triển từ chatlog thật** (nhóm dùng promptfoo nên mở rộng lên 30+). Lưu file trong `eval/` và **chốt quality bar trước khi đo**: "Đạt khi ≥ __% qua bộ, và [điều kiện cứng]" — chốt tại spec.md 23:59 và giữ nguyên sau đó. Không đạt quality bar nhưng phân tích được nguyên nhân vẫn được tính đủ điểm; số liệu bị chỉnh sửa sẽ không được tính. *(Bài giảng Ship/Limited/Hold.)*
+5. **Golden set ≥20 case nhóm tự xây**: ≥2 case cho mỗi lớp chỗ khó + 8-10 case thường + 2-4 case hiếm; trong đó **≥10 case lấy hoặc phát triển từ chatlog thật** (nhóm dùng promptfoo nên mở rộng lên 30+). Lưu file trong `eval/` và **chốt quality bar trước khi đo**: "Đạt khi ≥ __% qua bộ, và [điều kiện cứng]" — chốt tại hạn chốt spec của khoá và giữ nguyên sau đó. Không đạt quality bar nhưng phân tích được nguyên nhân vẫn được tính đủ điểm; số liệu bị chỉnh sửa sẽ không được tính. *(Bài giảng Ship/Limited/Hold.)*
 
 ## 2.7 Trước CP4 tự soát
 
-Spec đủ §1-§9 theo `03-template-ai-spec.md` · evidence đạt chuẩn A/B có log · bảng impact ≥3 ứng viên + ứng viên loại · ≥4 nguyên tắc có "áp vào đâu" · 4 lớp + ≥8 kịch bản · quality bar bằng % · kế hoạch sáng N2 (ai validate, ai dry run). **Commit spec.md trước 23:59 — quality bar chốt từ thời điểm này.**
+Spec đủ §1-§9 theo `03-template-ai-spec.md` · evidence đạt chuẩn A/B có log · bảng impact ≥3 ứng viên + ứng viên loại · ≥4 nguyên tắc có "áp vào đâu" · 4 lớp + ≥8 kịch bản · quality bar bằng % · kế hoạch sáng N2 (ai validate, ai dry run). **Commit spec.md trước hạn chốt spec của khoá (K3: 23:59 ngày 1 · K4: 12:00 ngày 2) — quality bar chốt từ thời điểm này.**
 
 ---
 
@@ -184,7 +184,7 @@ Feedback log ≥5 mẩu có tên người thử · changelog có thay đổi t�
 1. **User & Job** *(45")* — job executor + core JTBD một câu + con số pain ("41/200 hội thoại...", "17/25 người khảo sát..."). Tránh: persona chung chung.
 2. **Vì sao chọn tính năng này** *(45")* — bảng impact rút gọn 3 ứng viên + ứng viên loại một dòng lý do. Tránh: trình bày như chỉ có đúng một ý tưởng từ đầu.
 3. **Giải pháp & demo live** *(2')* — lát cắt 1 câu + automation 1 dòng cost-of-error + **demo trực tiếp: 1 case chuẩn + 1 case chỗ khó** (case lỗi được xử lý là phần được đánh giá cao — không nên giấu). Tránh: 3 case đều happy path; video thay live khi live vẫn chạy được.
-4. **Kết quả đo** *(45")* — % qua golden set đối chiếu **quality bar đã chốt từ 23:59 N1** + 1 failure đáng kể nhất; chưa đạt thì phân tích nguyên nhân. Tránh: chỉ trình bày số đẹp mà không nêu quality bar đã cam kết.
+4. **Kết quả đo** *(45")* — % qua golden set đối chiếu **quality bar đã chốt từ hạn chốt spec** + 1 failure đáng kể nhất; chưa đạt thì phân tích nguyên nhân. Tránh: chỉ trình bày số đẹp mà không nêu quality bar đã cam kết.
 5. **User thật nói gì** *(45")* — ≥2 quote nguyên văn từ validation (tên/vai) + thay đổi đã làm. Tránh: chỉ toàn lời khen chung chung.
 6. **Nếu có thêm 1 tuần** *(30")* — 2-3 việc ưu tiên trỏ về feedback/failure chưa xử + một dòng bài học lớn nhất. Tránh: roadmap 10 mục.
 
