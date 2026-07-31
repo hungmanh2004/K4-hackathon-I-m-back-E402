@@ -79,12 +79,13 @@ def api_agent(req: AgentRequest) -> StreamingResponse:
 
 @app.get("/audio/{filename}")
 def serve_audio(filename: str) -> FileResponse:
-    # Chỉ nhận tên file trần — chặn ../ đi ra ngoài audio_output/
-    if "/" in filename or "\\" in filename or ".." in filename:
-        raise HTTPException(404, "Không tìm thấy file audio")
-
-    path = tts.AUDIO_DIR / filename
-    if not path.exists():
+    # So khớp bằng is_relative_to() sau resolve() thay vì lọc chuỗi con —
+    # trên Windows, Path("audio_output") / "C:.env" bỏ qua vế trái vì vế phải
+    # mang ký tự ổ đĩa, nên "C:.env" (không chứa "/", "\\" hay "..") có thể
+    # thoát khỏi audio_output/ nếu chỉ chặn bằng substring.
+    audio_dir = tts.AUDIO_DIR.resolve()
+    path = (audio_dir / filename).resolve()
+    if not path.is_relative_to(audio_dir) or not path.is_file():
         raise HTTPException(404, "Không tìm thấy file audio")
 
     return FileResponse(path, media_type="audio/mpeg")

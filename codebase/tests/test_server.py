@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -73,3 +74,36 @@ def test_missing_audio_file_returns_404(client):
 
 def test_audio_route_rejects_path_traversal(client):
     assert client.get("/audio/..%2F..%2Fserver.py").status_code == 404
+
+
+def test_audio_route_rejects_windows_drive_relative_traversal(client, monkeypatch, tmp_path):
+    """Chặn escape kiểu 'C:secret.txt' NGAY CẢ KHI AUDIO_DIR được dựng tương đối.
+
+    Cơ chế lỗi: trên Windows, Path("audio_output") / "C:secret.txt" bỏ qua vế
+    trái vì vế phải mang ký tự ổ đĩa — kết quả là "C:secret.txt" (tương đối
+    theo thư mục hiện hành của TIẾN TRÌNH trên ổ đó), KHÔNG nằm dưới
+    audio_output/. Chuỗi "C:secret.txt" không chứa "/", "\\" hay ".." nên bộ
+    lọc substring của bản cũ không bắt được.
+
+    Trong repo thật, tts.AUDIO_DIR = Path(__file__).parent / "audio_output"
+    nên LUÔN là đường dẫn tuyệt đối — vì vậy request /audio/C:secret.txt cụ
+    thể không rò rỉ gì trên máy phát triển hiện tại (join với vế trái tuyệt
+    đối cùng ổ đĩa sẽ được pathlib giữ nguyên, không escape). Nhưng đó là một
+    sự trùng hợp của cách AUDIO_DIR được dựng, không phải một chốt chặn có
+    chủ đích trong route — nếu AUDIO_DIR từng bị đổi thành tương đối (hoặc
+    trên máy có ổ đĩa khác với ổ chứa audio_output), lỗ hổng sẽ lộ ra ngay.
+    Test này giả lập đúng kịch bản gốc bằng cách trỏ AUDIO_DIR tới một thư
+    mục con TƯƠNG ĐỐI của cwd, để xác nhận route tự nó chặn được bằng
+    resolve() + is_relative_to() — không phụ thuộc may rủi vào việc AUDIO_DIR
+    có tuyệt đối hay không.
+    """
+    secret = tmp_path / "secret.txt"
+    secret.write_text("BI MAT KHONG DUOC LO RA NGOAI")
+    (tmp_path / "audio_output").mkdir()
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(server.tts, "AUDIO_DIR", Path("audio_output"))
+
+    drive = tmp_path.drive  # vd "C:" — phải khớp ổ đĩa của tmp_path để escape
+    res = client.get(f"/audio/{drive}secret.txt")
+    assert res.status_code == 404
